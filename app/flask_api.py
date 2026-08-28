@@ -785,13 +785,17 @@ def aqi_forecast():
     latest_timestamp = city_df["hour"].iloc[-1]
     latest_row = city_df.iloc[-1]
 
-    excluded = {"city", "hour", "coverage_quality", "target_24h", "target_48h", "target_72h"}
-    feature_cols = [
-        c for c in city_df.columns
-        if c not in excluded and np.issubdtype(city_df[c].dtype, np.number)
-    ]
-    # Use the model's own SimpleImputer — do not fillna(0) here; pass raw NaN values
-    X_latest = pd.DataFrame([latest_row[feature_cols]])
+    # Get exact model features using authoritative contract
+    from utils.feature_contract import get_model_features
+    
+    try:
+        X_latest = get_model_features(pd.DataFrame([latest_row]))
+    except Exception as e:
+        logger.error(f"Feature validation failed: {e}")
+        return jsonify({
+            "success": False,
+            "error": f"Feature schema validation failed: {str(e)}"
+        }), 400
 
     forecast: Dict[str, Any] = {}
     predicted_aqis: Dict[str, int] = {}

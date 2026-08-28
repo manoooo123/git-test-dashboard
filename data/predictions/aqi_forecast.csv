@@ -1,0 +1,4 @@
+forecast_horizon_hours,forecast_timestamp,predicted_pm2_5,predicted_aqi,aqi_category,health_message,model
+24,2026-01-01T22:00:00+00:00,279.06,329,Hazardous,Health emergency. Avoid outdoor exposure and follow local health guidance.,Ridge
+48,2026-01-02T22:00:00+00:00,272.89,323,Hazardous,Health emergency. Avoid outdoor exposure and follow local health guidance.,Ridge
+72,2026-01-03T22:00:00+00:00,186.5,237,Very Unhealthy,Health alert. Everyone should avoid prolonged outdoor activity.,Ridge

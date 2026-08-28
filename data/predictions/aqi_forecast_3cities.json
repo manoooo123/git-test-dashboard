@@ -1,0 +1,110 @@
+{
+    "project": "Pearls AQI Predictor",
+    "cities": [
+        "Lahore",
+        "Islamabad",
+        "Faisalabad"
+    ],
+    "generated_at": "2026-08-25T18:13:59.943916+00:00",
+    "forecast": [
+        {
+            "city": "Lahore",
+            "forecast_horizon_hours": 24,
+            "forecast_timestamp": "2026-08-23T22:00:00+00:00",
+            "current_pm2_5": 37.6,
+            "predicted_pm2_5": 40.39,
+            "predicted_aqi": 113,
+            "aqi_category": "Unhealthy for Sensitive Groups",
+            "health_message": "Sensitive groups should reduce prolonged outdoor activity.",
+            "model": "RandomForest"
+        },
+        {
+            "city": "Lahore",
+            "forecast_horizon_hours": 48,
+            "forecast_timestamp": "2026-08-24T22:00:00+00:00",
+            "current_pm2_5": 37.6,
+            "predicted_pm2_5": 46.53,
+            "predicted_aqi": 128,
+            "aqi_category": "Unhealthy for Sensitive Groups",
+            "health_message": "Sensitive groups should reduce prolonged outdoor activity.",
+            "model": "RandomForest"
+        },
+        {
+            "city": "Lahore",
+            "forecast_horizon_hours": 72,
+            "forecast_timestamp": "2026-08-25T22:00:00+00:00",
+            "current_pm2_5": 37.6,
+            "predicted_pm2_5": 51.02,
+            "predicted_aqi": 139,
+            "aqi_category": "Unhealthy for Sensitive Groups",
+            "health_message": "Sensitive groups should reduce prolonged outdoor activity.",
+            "model": "RandomForest"
+        },
+        {
+            "city": "Islamabad",
+            "forecast_horizon_hours": 24,
+            "forecast_timestamp": "2026-08-23T22:00:00+00:00",
+            "current_pm2_5": 6.5,
+            "predicted_pm2_5": 28.1,
+            "predicted_aqi": 85,
+            "aqi_category": "Moderate",
+            "health_message": "Air quality is acceptable. Sensitive people should monitor conditions.",
+            "model": "RandomForest"
+        },
+        {
+            "city": "Islamabad",
+            "forecast_horizon_hours": 48,
+            "forecast_timestamp": "2026-08-24T22:00:00+00:00",
+            "current_pm2_5": 6.5,
+            "predicted_pm2_5": 30.57,
+            "predicted_aqi": 90,
+            "aqi_category": "Moderate",
+            "health_message": "Air quality is acceptable. Sensitive people should monitor conditions.",
+            "model": "RandomForest"
+        },
+        {
+            "city": "Islamabad",
+            "forecast_horizon_hours": 72,
+            "forecast_timestamp": "2026-08-25T22:00:00+00:00",
+            "current_pm2_5": 6.5,
+            "predicted_pm2_5": 22.12,
+            "predicted_aqi": 72,
+            "aqi_category": "Moderate",
+            "health_message": "Air quality is acceptable. Sensitive people should monitor conditions.",
+            "model": "RandomForest"
+        },
+        {
+            "city": "Faisalabad",
+            "forecast_horizon_hours": 24,
+            "forecast_timestamp": "2026-08-23T22:00:00+00:00",
+            "current_pm2_5": 41.9,
+            "predicted_pm2_5": 55.03,
+            "predicted_aqi": 149,
+            "aqi_category": "Unhealthy for Sensitive Groups",
+            "health_message": "Sensitive groups should reduce prolonged outdoor activity.",
+            "model": "RandomForest"
+        },
+        {
+            "city": "Faisalabad",
+            "forecast_horizon_hours": 48,
+            "forecast_timestamp": "2026-08-24T22:00:00+00:00",
+            "current_pm2_5": 41.9,
+            "predicted_pm2_5": 55.26,
+            "predicted_aqi": 150,
+            "aqi_category": "Unhealthy for Sensitive Groups",
+            "health_message": "Sensitive groups should reduce prolonged outdoor activity.",
+            "model": "RandomForest"
+        },
+        {
+            "city": "Faisalabad",
+            "forecast_horizon_hours": 72,
+            "forecast_timestamp": "2026-08-25T22:00:00+00:00",
+            "current_pm2_5": 41.9,
+            "predicted_pm2_5": 52.41,
+            "predicted_aqi": 143,
+            "aqi_category": "Unhealthy for Sensitive Groups",
+            "health_message": "Sensitive groups should reduce prolonged outdoor activity.",
+            "model": "RandomForest"
+        }
+    ]
+}

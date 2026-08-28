@@ -1,0 +1,31 @@
+{
+    "city": "Lahore",
+    "forecast_generated_from": "2025-12-31",
+    "current_aqi": 456.79,
+    "forecasts": [
+        {
+            "horizon": "day_1",
+            "date": "2026-01-01",
+            "predicted_aqi": 439.27,
+            "category": "Hazardous",
+            "current_aqi": 456.79,
+            "predicted_change": -17.52
+        },
+        {
+            "horizon": "day_2",
+            "date": "2026-01-02",
+            "predicted_aqi": 428.88,
+            "category": "Hazardous",
+            "current_aqi": 456.79,
+            "predicted_change": -27.91
+        },
+        {
+            "horizon": "day_3",
+            "date": "2026-01-03",
+            "predicted_aqi": 426.1,
+            "category": "Hazardous",
+            "current_aqi": 456.79,
+            "predicted_change": -30.69
+        }
+    ]
+}

@@ -73,10 +73,12 @@ def test_prediction_logging():
 
 def test_user_preferences():
     test_email = "pref_user@pearls-aqi.org"
-    _, _, user_id = register_user(test_email, "Password123", "Pref User")
-    if not user_id:
-        _, _, user_data = authenticate_user(test_email, "Password123")
-        user_id = user_data["id"]
+    success, msg, user_id = register_user(test_email, "StrongPassword123!", "Pref User")
+    if not success or not user_id:
+        success, msg, user_data = authenticate_user(test_email, "StrongPassword123!")
+        user_id = user_data["id"] if user_data else None
+        
+    assert user_id is not None, f"Failed to create or authenticate user: {msg}"
 
     updated = update_user_preferences(user_id, ["Lahore", "Islamabad"], 180, test_email)
     assert updated is True

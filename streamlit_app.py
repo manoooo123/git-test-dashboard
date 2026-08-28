@@ -1,13 +1,5 @@
 """
-Pearls AQI Predictor - Production AI Environmental Intelligence Platform v2.2.0
-
-Fixes in this version:
-- Auth left panel: replaced invisible gradient text with solid visible colors
-- Selectbox/dropdown: forced dark background + white text on all dropdowns
-- Dashboard: city selector moved from navbar to dashboard header (clean design)
-- All text visibility: removed all -webkit-text-fill-color:transparent usages
-- Navbar: clean 6-item navigation without city clutter
-- History dropdown: fixed white-on-white option text
+Pearls AQI Predictor - Production Environmental Intelligence Platform v2.3.0
 """
 
 from __future__ import annotations
@@ -49,6 +41,99 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 load_dotenv(PROJECT_ROOT / ".env")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 logger = logging.getLogger("pearls_streamlit")
+
+# Enhanced Grid Layout CSS
+st.markdown("""
+<style>
+/* Custom grid enhancements for WhatsApp-like compact layout */
+.stApp {
+    background: linear-gradient(135deg, #0f1419 0%, #1e293b 100%);
+}
+
+/* Enhanced grid container */
+div[data-testid="stContainer"] {
+    gap: 6px !important;
+    padding: 8px !important;
+}
+
+/* Tighter grid spacing */
+.element-container {
+    margin-bottom: 6px !important;
+}
+
+/* Custom grid cards with WhatsApp-like spacing */
+.grid-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 12px;
+    margin: 2px;
+    transition: all 0.2s ease;
+}
+
+.grid-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(56, 189, 248, 0.3);
+}
+
+/* Compact metric styling */
+.metric-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    transition: all 0.2s ease;
+    margin: 2px;
+}
+
+.metric-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-2px);
+}
+
+/* Forecast card improvements */
+.forecast-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.2s ease;
+    margin: 3px;
+}
+
+.forecast-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-3px);
+}
+
+/* Tighter column gaps */
+div.row-widget.stRadio > div {
+    flex-direction: row;
+    gap: 8px !important;
+}
+
+/* Remove default Streamlit margins */
+.block-container {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+}
+
+/* Compact navigation */
+div[data-testid="stHorizontalBlock"] {
+    gap: 4px !important;
+}
+
+/* Grid responsiveness */
+@media (max-width: 768px) {
+    div[style*="grid-template-columns"] {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+        gap: 4px !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ============================================================================
 # PAGE CONFIG
@@ -610,10 +695,22 @@ def run_forecasts(city_df: pd.DataFrame) -> Dict[int, Dict[str, Any]]:
             }
         return results
     
+    # Get the latest row from city data
+    try:
+        latest_row = city_df.iloc[-1].to_dict()
+    except Exception:
+        for h in (24, 48, 72):
+            results[h] = {
+                "status": "unavailable",
+                "error": "Cannot extract latest feature row from city data."
+            }
+        return results
+    
     # Get feature columns (exclude metadata and targets)
     excluded = {"city", "hour", "timestamp", "coverage_quality", 
                 "target_24h", "target_48h", "target_72h",
-                "target_pm2_5_24h", "target_pm2_5_48h", "target_pm2_5_72h"}
+                "target_pm2_5_24h", "target_pm2_5_48h", "target_pm2_5_72h",
+                "is_missing_hour"}
     fcols = [c for c in city_df.columns 
              if c not in excluded and np.issubdtype(city_df[c].dtype, np.number)]
     
@@ -625,96 +722,114 @@ def run_forecasts(city_df: pd.DataFrame) -> Dict[int, Dict[str, Any]]:
             }
         return results
     
-    # Get latest observation and prepare input
-    latest_row = city_df.iloc[-1]
-    X = pd.DataFrame([latest_row[fcols]])
-    
-    # Pass raw NaN values to model - Ridge pipeline has SimpleImputer(strategy='median')
-    # DO NOT use fillna with zero as it bypasses the trained imputer
-    
-    # Run prediction for each horizon
-    for h in (24, 48, 72):
-        model = load_model(h)
-        
-        if model is None:
-            results[h] = {
-                "status": "unavailable",
-                "error": f"Model artifact not found: best_model_{h}h.joblib"
-            }
-            continue
-        
-        try:
-            # Execute model prediction
-            raw_prediction = model.predict(X)[0]
-            
-            # SANITY CHECK 1: Detect NaN
-            if pd.isna(raw_prediction):
-                logger.error(f"Model returned NaN prediction for +{h}h horizon")
+    # Get exact model features using authoritative contract
+    try:
+        from utils.feature_contract import get_model_features
+        X = get_model_features(pd.DataFrame([latest_row]))
+    except Exception as e:
+        # Fallback: use the known 29 features directly
+        feature_row = {k: latest_row.get(k, 0.0) for k in fcols if k in latest_row}
+        if len(feature_row) < 20:  # Basic sanity check
+            for h in (24, 48, 72):
                 results[h] = {
                     "status": "unavailable",
-                    "error": f"Model returned invalid NaN prediction for +{h}h"
+                    "error": f"Insufficient features: only {len(feature_row)} available."
+                }
+            return results
+        X = pd.DataFrame([feature_row])
+    
+    try:
+        # Run prediction for each horizon
+        for h in (24, 48, 72):
+            model = load_model(h)
+            
+            if model is None:
+                results[h] = {
+                    "status": "unavailable",
+                    "error": f"Model artifact not found: best_model_{h}h.joblib"
                 }
                 continue
             
-            # SANITY CHECK 2: Detect Infinity
-            if np.isinf(raw_prediction):
-                logger.error(f"Model returned Inf prediction for +{h}h horizon")
-                results[h] = {
-                    "status": "unavailable",
-                    "error": f"Model returned invalid Inf prediction for +{h}h"
-                }
-                continue
-            
-            # SANITY CHECK 3: Convert to float and validate
             try:
-                pm25 = float(raw_prediction)
-            except (TypeError, ValueError) as e:
-                logger.error(f"Cannot convert prediction to float for +{h}h: {e}")
+                # Execute model prediction
+                raw_prediction = model.predict(X)[0]
+                
+                # SANITY CHECK 1: Detect NaN
+                if pd.isna(raw_prediction):
+                    logger.error(f"Model returned NaN prediction for +{h}h horizon")
+                    results[h] = {
+                        "status": "unavailable",
+                        "error": f"Model returned invalid NaN prediction for +{h}h"
+                    }
+                    continue
+                
+                # SANITY CHECK 2: Detect Infinity
+                if np.isinf(raw_prediction):
+                    logger.error(f"Model returned Inf prediction for +{h}h horizon")
+                    results[h] = {
+                        "status": "unavailable",
+                        "error": f"Model returned invalid Inf prediction for +{h}h"
+                    }
+                    continue
+                
+                # SANITY CHECK 3: Convert to float and validate
+                try:
+                    pm25 = float(raw_prediction)
+                except (TypeError, ValueError) as e:
+                    logger.error(f"Cannot convert prediction to float for +{h}h: {e}")
+                    results[h] = {
+                        "status": "unavailable",
+                        "error": f"Invalid prediction type for +{h}h"
+                    }
+                    continue
+                
+                # SANITY CHECK 4: Ensure non-negative PM2.5
+                pm25 = max(0.0, pm25)
+                
+                # SANITY CHECK 5: Validate reasonable range (0-1000 µg/m³)
+                if pm25 > 1000:
+                    logger.warning(f"Unusually high PM2.5 prediction for +{h}h: {pm25:.2f}")
+                    # Don't reject, but log for investigation
+                
+                # Calculate AQI from validated PM2.5
+                aqi = calculate_us_aqi(pm25)
+                
+                # SANITY CHECK 6: Validate AQI calculation
+                if aqi == 0 and pm25 > 0:
+                    logger.error(f"AQI calculation failed for PM2.5={pm25:.2f}")
+                    results[h] = {
+                        "status": "unavailable",
+                        "error": f"AQI calculation error for +{h}h"
+                    }
+                    continue
+                
+                # Get AQI category and health advice
+                cat, color, bg, health = get_aqi_details(aqi)
+                
+                # SUCCESS: Valid prediction
+                results[h] = {
+                    "status": "success",
+                    "pm25": round(pm25, 2),
+                    "aqi": aqi,
+                    "category": cat,
+                    "color": color,
+                    "bg": bg,
+                    "health": health
+                }
+                
+            except Exception as exc:
+                logger.error(f"Prediction failed for +{h}h horizon: {exc}")
                 results[h] = {
                     "status": "unavailable",
-                    "error": f"Invalid prediction type for +{h}h"
+                    "error": f"Prediction error: {str(exc)}"
                 }
-                continue
-            
-            # SANITY CHECK 4: Ensure non-negative PM2.5
-            pm25 = max(0.0, pm25)
-            
-            # SANITY CHECK 5: Validate reasonable range (0-1000 µg/m³)
-            if pm25 > 1000:
-                logger.warning(f"Unusually high PM2.5 prediction for +{h}h: {pm25:.2f}")
-                # Don't reject, but log for investigation
-            
-            # Calculate AQI from validated PM2.5
-            aqi = calculate_us_aqi(pm25)
-            
-            # SANITY CHECK 6: Validate AQI calculation
-            if aqi == 0 and pm25 > 0:
-                logger.error(f"AQI calculation failed for PM2.5={pm25:.2f}")
-                results[h] = {
-                    "status": "unavailable",
-                    "error": f"AQI calculation error for +{h}h"
-                }
-                continue
-            
-            # Get AQI category and health advice
-            cat, color, bg, health = get_aqi_details(aqi)
-            
-            # SUCCESS: Valid prediction
-            results[h] = {
-                "status": "success",
-                "pm25": round(pm25, 2),
-                "aqi": aqi,
-                "category": cat,
-                "color": color,
-                "bg": bg,
-                "health": health
-            }
-            
-        except Exception as exc:
-            logger.error(f"Prediction failed for +{h}h horizon: {exc}")
+                
+    except Exception as exc:
+        logger.error(f"Feature processing failed: {exc}")
+        for h in (24, 48, 72):
             results[h] = {
                 "status": "unavailable",
-                "error": f"Prediction error: {str(exc)}"
+                "error": f"Feature processing error: {str(exc)}"
             }
     
     return results
@@ -760,89 +875,86 @@ if not st.session_state["user"] and st.session_state["auth_token"]:
         st.session_state["auth_token"] = None
 
 # ============================================================================
-# AUTH PORTAL
+# AUTH PORTAL - FIXED LAYOUT
 # ============================================================================
 
 if not st.session_state["user"]:
-    col_l, col_r = st.columns([1.15, 1])
+    # Create properly balanced two-panel layout
+    col_l, col_r = st.columns([1.2, 1], gap="medium")
 
-    # ---- LEFT BRAND PANEL ------------------------------------------------
+    # ---- LEFT BRAND PANEL - Compact but informative ----
     with col_l:
         st.markdown("""
 <div style="background:linear-gradient(160deg,#0F1B2D 0%,#162032 60%,#0A1628 100%);
             border:1px solid rgba(56,189,248,0.18); border-radius:20px;
-            padding:36px 38px; min-height:580px; box-sizing:border-box;">
+            padding:28px 32px; box-sizing:border-box; height:fit-content;">
 
   <div style="display:inline-block; background:rgba(56,189,248,0.12);
               border:1px solid rgba(56,189,248,0.3); color:#38BDF8;
               padding:5px 14px; border-radius:9999px; font-size:0.78rem;
               font-weight:800; letter-spacing:0.06em; text-transform:uppercase;
-              margin-bottom:22px;">
+              margin-bottom:18px;">
     ⚡ AI Environmental Intelligence
   </div>
 
-  <div style="margin-bottom:12px;">
-    <span style="font-size:2.6rem; font-weight:900; color:#38BDF8;
-                 line-height:1.1; display:block; font-family:inherit;">
+  <div style="margin-bottom:10px;">
+    <span style="font-size:2.4rem; font-weight:900; color:#38BDF8;
+                 line-height:1.1; display:block;">
       Pearls AQI
     </span>
-    <span style="font-size:2.6rem; font-weight:900; color:#FFFFFF;
-                 line-height:1.1; display:block; font-family:inherit;">
+    <span style="font-size:2.4rem; font-weight:900; color:#FFFFFF;
+                 line-height:1.1; display:block;">
       Predictor
     </span>
   </div>
 
-  <p style="font-size:1.05rem; font-weight:700; color:#38BDF8; margin:0 0 12px 0;">
+  <p style="font-size:1.05rem; font-weight:700; color:#38BDF8; margin:0 0 10px 0;">
     Breathe smarter. Predict cleaner.
   </p>
 
-  <p style="font-size:0.9rem; color:#94A3B8; line-height:1.65;
-            max-width:460px; margin-bottom:26px;">
+  <p style="font-size:0.9rem; color:#94A3B8; line-height:1.65; margin-bottom:22px;">
     End-to-end ML forecasting platform. Ingests real OpenAQ v3 sensor
     data and Open-Meteo atmospheric forecasts to predict 3-day AQI
     across Lahore, Islamabad and Faisalabad.
   </p>
 
-  <svg width="100%" height="72" viewBox="0 0 420 72" fill="none"
-       xmlns="http://www.w3.org/2000/svg" style="margin-bottom:22px; display:block;">
-    <path d="M6 36 C80 6,170 66,414 36" stroke="#38BDF8" stroke-width="2.2"
+  <svg width="100%" height="60" viewBox="0 0 420 60" fill="none"
+       xmlns="http://www.w3.org/2000/svg" style="margin-bottom:18px; display:block;">
+    <path d="M6 30 C80 6,170 54,414 30" stroke="#38BDF8" stroke-width="2.2"
           stroke-linecap="round" opacity="0.7"/>
-    <path d="M6 52 C100 78,250 4,414 52" stroke="#F59E0B" stroke-width="1.6"
+    <path d="M6 44 C100 66,250 4,414 44" stroke="#F59E0B" stroke-width="1.6"
           stroke-dasharray="5 5" opacity="0.5"/>
-    <circle cx="100" cy="22" r="4" fill="#38BDF8"/>
-    <circle cx="100" cy="22" r="9" fill="#38BDF8" fill-opacity="0.2"/>
-    <circle cx="252" cy="54" r="5" fill="#818CF8"/>
-    <circle cx="252" cy="54" r="10" fill="#818CF8" fill-opacity="0.2"/>
-    <circle cx="370" cy="30" r="4" fill="#10B981"/>
-    <circle cx="370" cy="30" r="8" fill="#10B981" fill-opacity="0.2"/>
+    <circle cx="100" cy="18" r="3" fill="#38BDF8"/>
+    <circle cx="100" cy="18" r="7" fill="#38BDF8" fill-opacity="0.2"/>
+    <circle cx="252" cy="46" r="4" fill="#818CF8"/>
+    <circle cx="252" cy="46" r="8" fill="#818CF8" fill-opacity="0.2"/>
+    <circle cx="370" cy="26" r="3" fill="#10B981"/>
+    <circle cx="370" cy="26" r="6" fill="#10B981" fill-opacity="0.2"/>
   </svg>
 
-  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:26px;">
-    <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
-                border-radius:10px; padding:14px; text-align:center;">
-      <div style="font-size:1.2rem; margin-bottom:5px;">📡</div>
-      <div style="font-size:0.75rem; font-weight:700; color:#E2E8F0;">Live Telemetry</div>
-      <div style="font-size:0.67rem; color:#64748B; margin-top:2px;">OpenAQ v3</div>
+  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:20px;">
+    <div class="capability-box">
+      <div style="font-size:1.1rem; margin-bottom:4px;">📡</div>
+      <div style="font-size:0.72rem; font-weight:700; color:#E2E8F0;">Live Telemetry</div>
+      <div style="font-size:0.65rem; color:#64748B; margin-top:2px;">OpenAQ v3</div>
     </div>
-    <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
-                border-radius:10px; padding:14px; text-align:center;">
-      <div style="font-size:1.2rem; margin-bottom:5px;">🔮</div>
-      <div style="font-size:0.75rem; font-weight:700; color:#E2E8F0;">3-Day Forecast</div>
-      <div style="font-size:0.67rem; color:#64748B; margin-top:2px;">Ridge Models</div>
+    <div class="capability-box">
+      <div style="font-size:1.1rem; margin-bottom:4px;">🔮</div>
+      <div style="font-size:0.72rem; font-weight:700; color:#E2E8F0;">3-Day Forecast</div>
+      <div style="font-size:0.65rem; color:#64748B; margin-top:2px;">Ridge Models</div>
     </div>
-    <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
-                border-radius:10px; padding:14px; text-align:center;">
-      <div style="font-size:1.2rem; margin-bottom:5px;">🧠</div>
-      <div style="font-size:0.75rem; font-weight:700; color:#E2E8F0;">Explainability</div>
-      <div style="font-size:0.67rem; color:#64748B; margin-top:2px;">Feature Importance</div>
+    <div class="capability-box">
+      <div style="font-size:1.1rem; margin-bottom:4px;">🧠</div>
+      <div style="font-size:0.72rem; font-weight:700; color:#E2E8F0;">Explainability</div>
+      <div style="font-size:0.65rem; color:#64748B; margin-top:2px;">Feature Importance</div>
     </div>
   </div>
 
   <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
-              border-radius:12px; padding:14px 18px;">
+              border-radius:12px; padding:12px 16px;">
     <div style="font-size:0.7rem; font-weight:800; color:#38BDF8; text-transform:uppercase;
-                letter-spacing:0.07em; margin-bottom:8px;">Operational Coverage</div>
-    <div style="display:flex; gap:18px; font-size:0.86rem; color:#E2E8F0;">
+                letter-spacing:0.07em; margin-bottom:6px;">Operational Coverage</div>
+    <div style="display:flex; gap:8px; font-size:0.8rem; color:#E2E8F0; flex-wrap:wrap;">
       <span>📍 <strong>Lahore</strong></span>
       <span>📍 <strong>Islamabad</strong></span>
       <span>📍 <strong>Faisalabad</strong></span>
@@ -851,112 +963,128 @@ if not st.session_state["user"]:
 
 </div>""", unsafe_allow_html=True)
 
-    # ---- RIGHT AUTH CARD -------------------------------------------------
+    # ---- RIGHT AUTH PANEL - Compact, no empty blocks ----
     with col_r:
         st.markdown("""
 <div style="background:rgba(10,18,35,0.95); border:1px solid rgba(255,255,255,0.1);
-            border-radius:20px; padding:32px 34px; box-sizing:border-box;">
+            border-radius:20px; padding:24px 28px; box-sizing:border-box; height:fit-content;">
 """, unsafe_allow_html=True)
+        
+        # Auth mode tabs - positioned naturally at top of form
         tab_in, tab_reg = st.tabs(["🔐 Sign In", "📝 Create Account"])
 
         with tab_in:
             st.markdown("""
-<div style="margin-bottom:18px;">
-  <h3 style="font-size:1.45rem; font-weight:800; color:#F0F4F8; margin:0 0 5px 0;">Welcome Back</h3>
-  <p style="font-size:0.85rem; color:#64748B; margin:0;">Sign in to your Pearls AQI intelligence dashboard.</p>
+<div style="margin-bottom:16px;">
+  <h3 style="font-size:1.4rem; font-weight:800; color:#F0F4F8; margin:0 0 4px 0;">Welcome Back</h3>
+  <p style="font-size:0.82rem; color:#64748B; margin:0;">Sign in to your Pearls AQI intelligence dashboard.</p>
 </div>""", unsafe_allow_html=True)
 
-            login_email = st.text_input("Email Address", placeholder="name@company.com", key="li_email")
-            pwd_t = "default" if st.session_state["show_login_pwd"] else "password"
-            login_pwd = st.text_input("Password", type=pwd_t, placeholder="••••••••••", key="li_pwd")
-            c1, c2 = st.columns(2)
+            # Fixed state binding - unique keys for each field
+            login_email = st.text_input("Email Address", placeholder="name@company.com", key="auth_login_email")
+            pwd_display = "text" if st.session_state.get("show_login_pwd", False) else "password"
+            login_pwd = st.text_input("Password", type=pwd_display, placeholder="••••••••••", key="auth_login_password")
+            
+            # Compact controls layout
+            c1, c2 = st.columns(2, gap="small")
             with c1:
-                st.session_state["show_login_pwd"] = st.checkbox("Show password", value=st.session_state["show_login_pwd"], key="ck_lip")
+                show_pwd = st.checkbox("Show password", value=st.session_state.get("show_login_pwd", False), key="show_login_pwd")
             with c2:
-                st.checkbox("Remember me", value=True, key="ck_rem")
-            st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+                remember_me = st.checkbox("Remember me", value=True, key="remember_login")
 
-            if st.button("Sign In to Platform", key="btn_li"):
-                ec = login_email.strip().lower()
-                if not ec or not login_pwd:
+            st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
+
+            if st.button("Sign In to Platform", key="btn_login", use_container_width=True):
+                email_clean = login_email.strip().lower()
+                if not email_clean or not login_pwd:
                     st.error("Please enter both email and password.")
-                elif "@" not in ec:
+                elif "@" not in email_clean:
                     st.error("Enter a valid email address.")
                 else:
-                    with st.spinner("Verifying…"):
-                        ok, msg, ud = authenticate_user(ec, login_pwd)
-                        if ok and ud:
-                            st.session_state["user"] = ud
-                            st.session_state["auth_token"] = create_session(ud["id"])
+                    with st.spinner("Verifying credentials…"):
+                        success, message, user_data = authenticate_user(email_clean, login_pwd)
+                        if success and user_data:
+                            st.session_state["user"] = user_data
+                            st.session_state["auth_token"] = create_session(user_data["id"])
                             st.success("Authentication successful — opening dashboard…")
                             st.rerun()
                         else:
-                            st.error(msg)
+                            st.error(message)
 
             with st.expander("Trouble signing in?"):
                 st.caption("Password reset is managed by the system administrator. Use the Create Account tab to register.")
 
         with tab_reg:
             st.markdown("""
-<div style="margin-bottom:18px;">
-  <h3 style="font-size:1.4rem; font-weight:800; color:#F0F4F8; margin:0 0 4px 0;">Create Account</h3>
-  <p style="font-size:0.85rem; color:#64748B; margin:0;">Start monitoring air quality and receiving 3-day AQI forecasts.</p>
+<div style="margin-bottom:16px;">
+  <h3 style="font-size:1.35rem; font-weight:800; color:#F0F4F8; margin:0 0 4px 0;">Create Account</h3>
+  <p style="font-size:0.82rem; color:#64748B; margin:0;">Start monitoring air quality and receiving 3-day AQI forecasts.</p>
 </div>""", unsafe_allow_html=True)
 
-            reg_name  = st.text_input("Full Name", placeholder="Alex Morgan", key="rg_name")
-            reg_email = st.text_input("Email Address", placeholder="alex@company.com", key="rg_email")
-            reg_pt    = "default" if st.session_state["show_reg_pwd"] else "password"
-            reg_pwd   = st.text_input("Password", type=reg_pt, placeholder="Create a strong password", key="rg_pwd")
+            # Fixed state binding - unique keys prevent field value mixing
+            full_name = st.text_input("Full Name", placeholder="Alex Morgan", key="auth_register_fullname")
+            reg_email = st.text_input("Email Address", placeholder="alex@company.com", key="auth_register_email")
+            pwd_type = "text" if st.session_state.get("show_reg_pwd", False) else "password"
+            reg_password = st.text_input("Password", type=pwd_type, placeholder="Create a strong password", key="auth_register_password")
 
-            if reg_pwd:
-                sc, lb, cl = pwd_strength(reg_pwd)
-                ck = {
-                    "6+ chars": len(reg_pwd) >= 6,
-                    "Uppercase": bool(re.search(r"[A-Z]", reg_pwd)),
-                    "Number": bool(re.search(r"[0-9]", reg_pwd)),
-                    "Symbol": bool(re.search(r"[^A-Za-z0-9]", reg_pwd)),
+            # Password strength indicator - compact design
+            if reg_password:
+                strength_score, strength_label, strength_color = pwd_strength(reg_password)
+                requirements = {
+                    "6+ chars": len(reg_password) >= 6,
+                    "Uppercase": bool(re.search(r"[A-Z]", reg_password)),
+                    "Number": bool(re.search(r"[0-9]", reg_password)),
+                    "Symbol": bool(re.search(r"[^A-Za-z0-9]", reg_password)),
                 }
-                ck_html = " &nbsp; ".join(
-                    f'<span style="color:{"#10B981" if v else "#64748B"};font-size:0.72rem;">{"✓" if v else "○"} {k}</span>'
-                    for k, v in ck.items()
+                req_html = " &nbsp; ".join(
+                    f'<span style="color:{"#10B981" if v else "#64748B"};font-size:0.7rem;">{"✓" if v else "○"} {k}</span>'
+                    for k, v in requirements.items()
                 )
                 st.markdown(f"""
-<div style="margin:4px 0 10px 0;">
-  <div style="display:flex; justify-content:space-between; font-size:0.78rem; font-weight:700; color:{cl};">
-    <span>Strength: {lb}</span><span>{sc}%</span>
+<div style="margin:6px 0 8px 0;">
+  <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700; color:{strength_color};">
+    <span>Strength: {strength_label}</span><span>{strength_score}%</span>
   </div>
   <div class="strength-bar-bg">
-    <div style="width:{sc}%; background:{cl}; height:100%; border-radius:3px;"></div>
+    <div style="width:{strength_score}%; background:{strength_color}; height:100%; border-radius:3px;"></div>
   </div>
-  <div>{ck_html}</div>
+  <div style="margin-top:4px;">{req_html}</div>
 </div>""", unsafe_allow_html=True)
 
-            reg_conf = st.text_input("Confirm Password", type=reg_pt, placeholder="Re-enter password", key="rg_conf")
-            st.session_state["show_reg_pwd"] = st.checkbox("Show passwords", value=st.session_state["show_reg_pwd"], key="ck_rsp")
-            terms = st.checkbox("I agree to the terms & privacy policy.", key="ck_terms")
-            st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+            confirm_password = st.text_input("Confirm Password", type=pwd_type, placeholder="Re-enter password", key="auth_register_confirm")
+            
+            # Show password toggle
+            show_reg_pwd = st.checkbox("Show passwords", value=st.session_state.get("show_reg_pwd", False), key="show_reg_pwd")
+            terms_accepted = st.checkbox("I agree to the terms & privacy policy.", key="accept_terms")
+            
+            st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
 
-            if st.button("Create Account & Access Platform", key="btn_reg"):
-                ec = reg_email.strip().lower()
-                if not ec or not reg_pwd:
-                    st.error("Email and password are required.")
-                elif "@" not in ec:
+            if st.button("Create Account & Access Platform", key="btn_register", use_container_width=True):
+                email_clean = reg_email.strip().lower()
+                if not full_name.strip() or not email_clean or not reg_password:
+                    st.error("All fields are required.")
+                elif "@" not in email_clean:
                     st.error("Enter a valid email address.")
-                elif len(reg_pwd) < 6:
+                elif len(reg_password) < 6:
                     st.error("Password must be at least 6 characters.")
-                elif reg_pwd != reg_conf:
+                elif reg_password != confirm_password:
                     st.error("Passwords do not match.")
-                elif not terms:
+                elif not terms_accepted:
                     st.warning("Please agree to the terms to continue.")
                 else:
-                    with st.spinner("Creating account…"):
-                        ok, msg, _ = register_user(ec, reg_pwd, reg_name.strip())
-                        if ok:
-                            st.success("Account created! Switch to Sign In.")
+                    with st.spinner("Creating your account…"):
+                        success, message = register_user(full_name.strip(), email_clean, reg_password)
+                        if success:
+                            st.success("Account created successfully! Please sign in.")
+                            # Clear registration form
+                            for key in ["auth_register_fullname", "auth_register_email", "auth_register_password", "auth_register_confirm"]:
+                                if key in st.session_state:
+                                    del st.session_state[key]
+                            st.rerun()
                         else:
-                            st.error(msg)
+                            st.error(message)
 
-        st.markdown("</div>", unsafe_allow_html=True)  # closes auth-right inner div
+        st.markdown("</div>", unsafe_allow_html=True)
     st.stop()
 
 
@@ -1125,7 +1253,7 @@ if st.session_state["current_nav"] == "Dashboard":
   </div>
 </div>""", unsafe_allow_html=True)
 
-    # ---- 3-day forecast ----
+    # ---- 3-day forecast with compact grid ----
     st.markdown("""<div style="font-size:1.1rem; font-weight:800; color:#F0F4F8;
                      margin:20px 0 10px 0;">🔮 3-Day ML Multi-Horizon Forecast</div>""",
                 unsafe_allow_html=True)
@@ -1133,16 +1261,16 @@ if st.session_state["current_nav"] == "Dashboard":
     with st.spinner("Running model inference…"):
         forecasts = run_forecasts(city_df)
 
-    fc1, fc2, fc3 = st.columns(3)
+    # Create compact WhatsApp-style grid
+    forecast_cards_html = []
     all_ok = True
     fc_aqis: Dict[int, int] = {}
 
-    for col_obj, h in zip([fc1, fc2, fc3], [24, 48, 72]):
+    for h in [24, 48, 72]:
         r = forecasts[h]
-        with col_obj:
-            if r["status"] == "success":
-                fc_aqis[h] = r["aqi"]
-                st.markdown(f"""
+        if r["status"] == "success":
+            fc_aqis[h] = r["aqi"]
+            card_html = f"""
 <div class="forecast-card" style="border-top:4px solid {r['color']};">
   <div style="font-size:0.68rem; font-weight:700; color:#475569;
               text-transform:uppercase; letter-spacing:0.07em; margin-bottom:4px;">
@@ -1162,27 +1290,34 @@ if st.session_state["current_nav"] == "Dashboard":
   <div style="font-size:0.67rem; color:#475569; margin-top:3px;">
     Ridge · best_model_{h}h
   </div>
-</div>""", unsafe_allow_html=True)
-            else:
-                all_ok = False
-                st.markdown(f"""
+</div>"""
+        else:
+            all_ok = False
+            card_html = f"""
 <div class="forecast-unavail">
   <div style="font-size:0.68rem; font-weight:700; color:#475569;
               text-transform:uppercase; letter-spacing:0.07em; margin-bottom:6px;">+{h} Hours</div>
   <div style="font-size:0.95rem; font-weight:700; color:#EF4444; margin-bottom:5px;">
     Forecast Unavailable
   </div>
-  <div style="font-size:0.75rem; color:#64748B; line-height:1.5;">
-    {r.get('error', 'Model or data unavailable.')}
+  <div style="font-size:0.76rem; color:#64748B;">
+    {r['error']}
   </div>
+</div>"""
+        forecast_cards_html.append(card_html)
+    
+    # Display as compact grid
+    st.markdown(f"""
+<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:10px 0 20px 0;">
+  {''.join(forecast_cards_html)}
 </div>""", unsafe_allow_html=True)
 
     if all_ok and fc_aqis:
         log_prediction(city, fc_aqis.get(24, 0), fc_aqis.get(48, 0), fc_aqis.get(72, 0), user_id=user["id"])
 
-    # ---- Environmental metrics ----
+    # ---- Environmental metrics with compact grid ----
     st.markdown("""<div style="font-size:1.05rem; font-weight:800; color:#F0F4F8;
-                     margin:20px 0 10px 0;">📊 Environmental Indicators</div>""",
+                     margin:14px 0 8px 0;">📊 Environmental Indicators</div>""",
                 unsafe_allow_html=True)
 
     metrics_data = [
@@ -1192,17 +1327,31 @@ if st.session_state["current_nav"] == "Dashboard":
         ("Wind",     latest_wind, 1, "km/h",  "#10B981"),
         ("Pressure", latest_pres, 1, "hPa",   "#F59E0B"),
     ]
-    m_cols = st.columns(5)
-    for i, (label, val, dec, unit, color) in enumerate(metrics_data):
-        with m_cols[i]:
-            disp = fmt(val, dec) if val is not None else "—"
-            unit_disp = unit if val is not None else "n/a"
-            st.markdown(f"""
+    
+    # Create compact grid for metrics
+    metrics_cards_html = []
+    for label, val, dec, unit, color in metrics_data:
+        disp = fmt(val, dec) if val is not None else "—"
+        unit_disp = unit if val is not None else "n/a"
+        card_html = f"""
 <div class="metric-card">
-  <div style="font-size:0.7rem; font-weight:700; color:#475569;
-              text-transform:uppercase; letter-spacing:0.07em; margin-bottom:5px;">{label}</div>
-  <div style="font-size:1.7rem; font-weight:800; color:{color}; line-height:1.1;">{disp}</div>
-  <div style="font-size:0.68rem; color:#475569; margin-top:3px;">{unit_disp}</div>
+  <div style="font-size:0.7rem; font-weight:700; color:#64748B; 
+              text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px;">
+    {label}
+  </div>
+  <div style="font-size:1.8rem; font-weight:800; color:{color}; line-height:1; margin-bottom:3px;">
+    {disp}
+  </div>
+  <div style="font-size:0.65rem; color:#94A3B8;">
+    {unit_disp}
+  </div>
+</div>"""
+        metrics_cards_html.append(card_html)
+    
+    # Display as compact 5-column grid with tighter spacing
+    st.markdown(f"""
+<div style="display:grid; grid-template-columns:repeat(5,1fr); gap:5px; margin:6px 0 14px 0;">
+  {''.join(metrics_cards_html)}
 </div>""", unsafe_allow_html=True)
 
     st.markdown("""<div style="font-size:0.72rem; color:#334155; margin-top:4px;">
@@ -1214,7 +1363,7 @@ if st.session_state["current_nav"] == "Dashboard":
     active = build_alerts(city_df, city, live_aqi, forecasts, alert_threshold)
     if active:
         st.markdown(f"""<div style="font-size:1.05rem; font-weight:800; color:#EF4444;
-                         margin:20px 0 8px 0;">🚨 Active Alerts ({len(active)})</div>""",
+                         margin:14px 0 6px 0;">🚨 Active Alerts ({len(active)})</div>""",
                     unsafe_allow_html=True)
         for a in active[:3]:
             sev = a["severity"]
@@ -1334,21 +1483,25 @@ elif st.session_state["current_nav"] == "Forecast":
 # ============================================================================
 
 elif st.session_state["current_nav"] == "Analytics":
-    al_h1, al_h2 = st.columns([3, 1])
-    with al_h1:
-        st.markdown(f"""
-<h2 style="font-size:1.5rem; font-weight:800; color:#F0F4F8; margin:0 0 4px 0;">
-  📊 Climate Analytics & Trends
-</h2>
-<div style="font-size:0.85rem; color:#64748B; margin-bottom:14px;">
-  All charts generated from the live feature store. Showing data for <strong style="color:#94A3B8">{city}</strong>.
+    # Header with compact layout
+    st.markdown(f"""
+<div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:14px; gap:10px; flex-wrap:wrap;">
+  <div>
+    <h2 style="font-size:1.5rem; font-weight:800; color:#F0F4F8; margin:0 0 4px 0;">
+      📊 Climate Analytics & Trends
+    </h2>
+    <div style="font-size:0.85rem; color:#64748B;">
+      All charts generated from the live feature store. Showing data for <strong style="color:#94A3B8">{city}</strong>.
+    </div>
+  </div>
 </div>""", unsafe_allow_html=True)
-    with al_h2:
-        al_city = st.selectbox("City", list(CITIES.keys()),
-                               index=list(CITIES.keys()).index(city), key="al_city_sel")
-        if al_city != city:
-            st.session_state["selected_city"] = al_city
-            st.rerun()
+
+    # City selector - inline compact design
+    al_city = st.selectbox("City", list(CITIES.keys()),
+                           index=list(CITIES.keys()).index(city), key="al_city_sel")
+    if al_city != city:
+        st.session_state["selected_city"] = al_city
+        st.rerun()
 
     if city_df.empty:
         st.warning("No feature data available. Run `python feature_pipeline/daily_live_refresh.py` to refresh.")
@@ -1357,10 +1510,19 @@ elif st.session_state["current_nav"] == "Analytics":
             lambda x: calculate_us_aqi(x) if pd.notna(x) else None
         )
 
-        ac1, ac2 = st.columns(2)
-        with ac1:
+        # Create compact 2-column chart grid
+        chart_1_html = ""
+        chart_2_html = ""
+        
+        # Create compact chart grid layout
+        trend = city_df.dropna(subset=["hour", "aqi"]).tail(72)
+        scat = city_df.dropna(subset=["temperature", "aqi", "humidity"]).tail(200)
+        
+        # Display charts in compact grid
+        col1, col2 = st.columns(2, gap="small")
+        
+        with col1:
             st.markdown("<div style='font-weight:700;color:#94A3B8;margin-bottom:6px;'>📈 72-Hour AQI Trend</div>", unsafe_allow_html=True)
-            trend = city_df.dropna(subset=["hour", "aqi"]).tail(72)
             if len(trend) >= 2:
                 fig1 = px.line(trend, x="hour", y="aqi",
                                title=f"72h AQI Trend — {city}",
@@ -1371,13 +1533,12 @@ elif st.session_state["current_nav"] == "Analytics":
                 fig1.update_layout(template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)",
                                    plot_bgcolor="rgba(15,23,42,0.5)", height=320,
                                    font_color="#F0F4F8", margin=dict(l=30,r=20,t=45,b=30))
-                st.plotly_chart(fig1, width="stretch")
+                st.plotly_chart(fig1, use_container_width=True)
             else:
                 st.info("Need at least 2 data points for the trend chart.")
 
-        with ac2:
+        with col2:
             st.markdown("<div style='font-weight:700;color:#94A3B8;margin-bottom:6px;'>🌡️ Temperature vs AQI</div>", unsafe_allow_html=True)
-            scat = city_df.dropna(subset=["temperature", "aqi", "humidity"]).tail(200)
             if len(scat) >= 5:
                 fig2 = px.scatter(scat, x="temperature", y="aqi", color="humidity",
                                   title=f"Temp & Humidity vs AQI — {city}",
@@ -1386,7 +1547,7 @@ elif st.session_state["current_nav"] == "Analytics":
                 fig2.update_layout(template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)",
                                    plot_bgcolor="rgba(15,23,42,0.5)", height=320,
                                    font_color="#F0F4F8", margin=dict(l=30,r=20,t=45,b=30))
-                st.plotly_chart(fig2, width="stretch")
+                st.plotly_chart(fig2, use_container_width=True)
             else:
                 st.info("Need at least 5 rows with temperature and humidity data.")
 
@@ -1427,11 +1588,32 @@ elif st.session_state["current_nav"] == "Model Insights":
   ⚙️ Model Intelligence & Feature Importance
 </h2>""", unsafe_allow_html=True)
 
-    mi1, mi2, mi3, mi4 = st.columns(4)
-    with mi1: st.metric("Active Estimator", "Ridge Regression")
-    with mi2: st.metric("Feature Count", f"{feat_count} features")
-    with mi3: st.metric("Training Rows", f"{dataset_rows:,}" if isinstance(dataset_rows, int) else str(dataset_rows))
-    with mi4: st.metric("Horizons", "24h / 48h / 72h")
+    # Create compact metrics grid
+    metrics_cards = [
+        ("Active Estimator", "Ridge Regression"),
+        ("Feature Count", f"{feat_count} features"),
+        ("Training Rows", f"{dataset_rows:,}" if isinstance(dataset_rows, int) else str(dataset_rows)),
+        ("Horizons", "24h / 48h / 72h")
+    ]
+    
+    metrics_html = []
+    for label, value in metrics_cards:
+        card_html = f"""
+<div class="metric-card" style="text-align:center;">
+  <div style="font-size:0.7rem; font-weight:700; color:#64748B; 
+              text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px;">
+    {label}
+  </div>
+  <div style="font-size:1.4rem; font-weight:800; color:#38BDF8; line-height:1;">
+    {value}
+  </div>
+</div>"""
+        metrics_html.append(card_html)
+    
+    st.markdown(f"""
+<div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin:10px 0 20px 0;">
+  {''.join(metrics_html)}
+</div>""", unsafe_allow_html=True)
 
     st.markdown("""
 <div class="glass-card" style="margin-top:14px;">
@@ -1530,12 +1712,23 @@ elif st.session_state["current_nav"] == "History":
 </div>""", unsafe_allow_html=True)
     else:
         hdf = pd.DataFrame(history)
-        hs1, hs2 = st.columns([2.5, 1])
-        with hs1:
-            search = st.text_input("Search by city or date", "", key="hist_q",
-                                   placeholder="e.g. Lahore or 2026")
-        with hs2:
-            cf = st.selectbox("Filter by city", ["All"] + list(CITIES.keys()), key="hist_cf")
+        
+        # Compact search/filter layout
+        st.markdown("""
+<div style="display:flex; gap:10px; align-items:flex-end; margin-bottom:14px; flex-wrap:wrap;">
+  <div style="flex:2; min-width:200px;">""", unsafe_allow_html=True)
+        
+        search = st.text_input("Search by city or date", "", key="hist_q",
+                               placeholder="e.g. Lahore or 2026")
+        
+        st.markdown("""
+  </div>
+  <div style="flex:1; min-width:150px;">""", unsafe_allow_html=True)
+        
+        cf = st.selectbox("Filter by city", ["All"] + list(CITIES.keys()), key="hist_cf")
+        
+        st.markdown("</div></div>", unsafe_allow_html=True)
+        
         if search:
             hdf = hdf[hdf["city"].str.contains(search, case=False, na=False) |
                       hdf["timestamp"].astype(str).str.contains(search, na=False)]

@@ -1,0 +1,36 @@
+{
+    "project": "Pearls AQI Predictor",
+    "city": "3 Cities",
+    "generated_at": "2026-08-23T15:21:05.425663+00:00",
+    "latest_observation": "2025-12-31T22:00:00+00:00",
+    "current_pm2_5": null,
+    "forecast": [
+        {
+            "forecast_horizon_hours": 24,
+            "forecast_timestamp": "2026-01-01T22:00:00+00:00",
+            "predicted_pm2_5": 279.06,
+            "predicted_aqi": 329,
+            "aqi_category": "Hazardous",
+            "health_message": "Health emergency. Avoid outdoor exposure and follow local health guidance.",
+            "model": "Ridge"
+        },
+        {
+            "forecast_horizon_hours": 48,
+            "forecast_timestamp": "2026-01-02T22:00:00+00:00",
+            "predicted_pm2_5": 272.89,
+            "predicted_aqi": 323,
+            "aqi_category": "Hazardous",
+            "health_message": "Health emergency. Avoid outdoor exposure and follow local health guidance.",
+            "model": "Ridge"
+        },
+        {
+            "forecast_horizon_hours": 72,
+            "forecast_timestamp": "2026-01-03T22:00:00+00:00",
+            "predicted_pm2_5": 186.5,
+            "predicted_aqi": 237,
+            "aqi_category": "Very Unhealthy",
+            "health_message": "Health alert. Everyone should avoid prolonged outdoor activity.",
+            "model": "Ridge"
+        }
+    ]
+}

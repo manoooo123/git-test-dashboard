@@ -1,0 +1,50 @@
+{
+  "dataset": "Pearls AQI Predictor",
+  "city": "Lahore",
+  "source": [
+    "OpenAQ",
+    "Open-Meteo"
+  ],
+  "status": "validated",
+  "rows": 16336,
+  "columns": 16,
+  "unique_timestamps": 16336,
+  "unique_sensors_observed": 62,
+  "start_timestamp": "2023-11-28 16:00:00+00:00",
+  "end_timestamp": "2025-12-31 18:00:00+00:00",
+  "expected_hourly_slots": 18339,
+  "observed_hourly_slots": 16336,
+  "missing_hourly_slots": 2003,
+  "temporal_coverage_ratio": 0.8907792136975844,
+  "duplicate_rows": 0,
+  "missing_values": {
+    "timestamp": 0,
+    "pm2_5": 0,
+    "pm2_5_median": 0,
+    "pm2_5_std": 0,
+    "pm2_5_min": 0,
+    "pm2_5_max": 0,
+    "sensor_count": 0,
+    "observation_count": 0,
+    "city": 0,
+    "temperature": 0,
+    "humidity": 0,
+    "pressure": 0,
+    "clouds": 0,
+    "wind_speed": 0,
+    "wind_direction": 0,
+    "precipitation": 0
+  },
+  "pm25_statistics": {
+    "mean": 107.16888241450476,
+    "median": 68.2,
+    "minimum": 0.0,
+    "maximum": 566.0
+  },
+  "sensor_statistics": {
+    "mean_sensors_per_hour": 7.216944172380019,
+    "median_sensors_per_hour": 1.0,
+    "minimum_sensors_per_hour": 1,
+    "maximum_sensors_per_hour": 62
+  }
+}
