@@ -5,6 +5,7 @@
 # --- Web Framework ---
 flask==3.1.1
 gunicorn==23.0.0
+waitress==3.0.2  # Windows-compatible WSGI server
 
 # --- Dashboard & UI ---
 streamlit==1.45.1
