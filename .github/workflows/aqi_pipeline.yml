@@ -1,0 +1,125 @@
+name: Pearls AQI Predictor — CI/CD Pipeline
+
+# ============================================================================
+# SCHEDULE
+#   Hourly  : feature refresh (fetch live data → engineer features → store)
+#   Daily   : model retraining + SHAP re-generation
+#   On push : CI validation (lint-free install + test suite)
+# ============================================================================
+
+on:
+  schedule:
+    - cron: '0 * * * *'    # Hourly — feature pipeline
+    - cron: '0 1 * * *'    # Daily at 01:00 UTC — model retraining
+  workflow_dispatch:         # Manual trigger from GitHub Actions UI
+  push:
+    branches: [main, master]
+
+jobs:
+  pearls-pipeline:
+    name: AQI Pipeline (Feature Refresh + Conditional Retrain)
+    runs-on: ubuntu-latest
+
+    # ----------------------------------------------------------------
+    # Permissions required for the auto-commit step
+    # ----------------------------------------------------------------
+    permissions:
+      contents: write
+
+    steps:
+      # ----------------------------------------------------------------
+      # 1. Checkout
+      # ----------------------------------------------------------------
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          # Fetch full history so git push does not fail on shallow clone
+          fetch-depth: 0
+
+      # ----------------------------------------------------------------
+      # 2. Python setup with pip cache
+      # ----------------------------------------------------------------
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      # ----------------------------------------------------------------
+      # 3. Install all dependencies (requirements.txt now includes Flask,
+      #    Streamlit, Plotly, PyArrow — all required by tests and pipelines)
+      # ----------------------------------------------------------------
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # ----------------------------------------------------------------
+      # 4. Run test suite BEFORE modifying any data
+      # ----------------------------------------------------------------
+      - name: Run Test Suite
+        env:
+          OPENAQ_API_KEY: ${{ secrets.OPENAQ_API_KEY }}
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+          FLASK_SECRET_KEY: ${{ secrets.FLASK_SECRET_KEY }}
+        run: |
+          pytest tests/ -v --tb=short
+
+      # ----------------------------------------------------------------
+      # 5. Hourly feature pipeline — always runs
+      # ----------------------------------------------------------------
+      - name: Execute Feature Pipeline (Hourly)
+        env:
+          OPENAQ_API_KEY: ${{ secrets.OPENAQ_API_KEY }}
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+          OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+        run: |
+          python feature_pipeline/daily_live_refresh.py
+
+      # ----------------------------------------------------------------
+      # 6. Daily model retraining + SHAP — only on daily cron or manual dispatch
+      #    The '0 0 * * *' cron has been updated to '0 1 * * *' above to avoid
+      #    conflicting with the hourly cron at 00:00.
+      # ----------------------------------------------------------------
+      - name: Retrain ML Models (Daily Only)
+        if: >
+          github.event.schedule == '0 1 * * *' ||
+          github.event_name == 'workflow_dispatch'
+        env:
+          OPENAQ_API_KEY: ${{ secrets.OPENAQ_API_KEY }}
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        run: |
+          python training_pipeline/train_3cities.py
+
+      - name: Re-generate Feature Importance (Daily Only)
+        if: >
+          github.event.schedule == '0 1 * * *' ||
+          github.event_name == 'workflow_dispatch'
+        run: |
+          python explainability/shap_analysis.py
+
+      # ----------------------------------------------------------------
+      # 7. Commit refreshed artefacts back to the repository
+      #
+      #    Uses GITHUB_TOKEN (automatically provided) — no PAT required
+      #    for same-repo pushes when `permissions: contents: write` is set.
+      #    [skip ci] prevents infinite pipeline loops.
+      # ----------------------------------------------------------------
+      - name: Commit & Push Refreshed Artefacts
+        run: |
+          git config --global user.name  "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Stage only the lightweight processed data and reports
+          # Large binary model files are excluded via .gitignore
+          git add data/processed/ reports/ || true
+          git add models/3cities/best_model_*.joblib    || true
+          git add models/3cities/ridge_*.joblib          || true
+          git add models/3cities/deep_learning_*.joblib  || true
+          git add models/forecasting/aqi_model_registry.json || true
+
+          # Only commit if there are actual changes
+          git diff-index --quiet HEAD || \
+            git commit -m "ci: auto-update AQI features and model artefacts [skip ci]"
+
+          git push origin HEAD:${{ github.ref_name }}

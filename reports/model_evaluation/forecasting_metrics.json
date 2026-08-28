@@ -1,0 +1,168 @@
+{
+    "project": "Pearls AQI Predictor",
+    "training_type": "time_series_forecasting",
+    "feature_count": 71,
+    "dataset_rows": 8036,
+    "train_rows": 5626,
+    "validation_rows": 1205,
+    "test_rows": 1205,
+    "targets": {
+        "24h": "target_pm2_5_24h",
+        "48h": "target_pm2_5_48h",
+        "72h": "target_pm2_5_72h"
+    },
+    "selected_models": [
+        {
+            "horizon": "24h",
+            "target": "target_pm2_5_24h",
+            "selected_model": "random_forest",
+            "model_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\forecasting\\best_model_24h.pkl",
+            "validation_mae": 59.56933475392618,
+            "test_mae": 63.907493390304424,
+            "test_rmse": 80.00695616491384,
+            "test_r2": -0.38773696611072683
+        },
+        {
+            "horizon": "48h",
+            "target": "target_pm2_5_48h",
+            "selected_model": "random_forest",
+            "model_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\forecasting\\best_model_48h.pkl",
+            "validation_mae": 72.94935538542792,
+            "test_mae": 75.19667339979615,
+            "test_rmse": 91.53955135182711,
+            "test_r2": -0.8560137495664233
+        },
+        {
+            "horizon": "72h",
+            "target": "target_pm2_5_72h",
+            "selected_model": "random_forest",
+            "model_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\forecasting\\best_model_72h.pkl",
+            "validation_mae": 80.2325827673854,
+            "test_mae": 77.86983843181869,
+            "test_rmse": 94.83763133807759,
+            "test_r2": -1.0097003709827472
+        }
+    ],
+    "leaderboard": [
+        {
+            "horizon": "24h",
+            "model": "ridge",
+            "validation_mae": 70.91198230752622,
+            "validation_rmse": 90.86754043833008,
+            "validation_r2": 0.18016322988771305,
+            "test_mae": 78.72773942357172,
+            "test_rmse": 94.7105244421261,
+            "test_r2": -0.944679981638012
+        },
+        {
+            "horizon": "24h",
+            "model": "random_forest",
+            "validation_mae": 59.56933475392618,
+            "validation_rmse": 80.91652710674916,
+            "validation_r2": 0.34989378704442875,
+            "test_mae": 63.907493390304424,
+            "test_rmse": 80.00695616491384,
+            "test_r2": -0.38773696611072683
+        },
+        {
+            "horizon": "24h",
+            "model": "extra_trees",
+            "validation_mae": 64.18478305803697,
+            "validation_rmse": 86.37044965700935,
+            "validation_r2": 0.2593036439111974,
+            "test_mae": 63.722902159910156,
+            "test_rmse": 79.8927406441461,
+            "test_r2": -0.3837776112704254
+        },
+        {
+            "horizon": "24h",
+            "model": "hist_gradient_boosting",
+            "validation_mae": 80.85560456780196,
+            "validation_rmse": 107.77268100381615,
+            "validation_r2": -0.1532599766868663,
+            "test_mae": 93.66789829362656,
+            "test_rmse": 110.04428371556226,
+            "test_r2": -1.6253465347137332
+        },
+        {
+            "horizon": "48h",
+            "model": "ridge",
+            "validation_mae": 94.1574669805053,
+            "validation_rmse": 117.19961075049234,
+            "validation_r2": -0.35512010210597,
+            "test_mae": 142.60321324650224,
+            "test_rmse": 157.15326591118458,
+            "test_r2": -4.470291275342745
+        },
+        {
+            "horizon": "48h",
+            "model": "random_forest",
+            "validation_mae": 72.94935538542792,
+            "validation_rmse": 96.70660193241221,
+            "validation_r2": 0.07734849202835015,
+            "test_mae": 75.19667339979615,
+            "test_rmse": 91.53955135182711,
+            "test_r2": -0.8560137495664233
+        },
+        {
+            "horizon": "48h",
+            "model": "extra_trees",
+            "validation_mae": 78.06438017902592,
+            "validation_rmse": 103.7004078217587,
+            "validation_r2": -0.06092913933395372,
+            "test_mae": 78.38228628259817,
+            "test_rmse": 94.79421357022186,
+            "test_r2": -0.9903400679067669
+        },
+        {
+            "horizon": "48h",
+            "model": "hist_gradient_boosting",
+            "validation_mae": 94.50380031071113,
+            "validation_rmse": 126.43400656559848,
+            "validation_r2": -0.5770782786994351,
+            "test_mae": 123.05028603533594,
+            "test_rmse": 137.48269396048335,
+            "test_r2": -3.186582917847307
+        },
+        {
+            "horizon": "72h",
+            "model": "ridge",
+            "validation_mae": 97.0433689892358,
+            "validation_rmse": 119.18417260557446,
+            "validation_r2": -0.391779469319143,
+            "test_mae": 155.87174599147946,
+            "test_rmse": 169.1122005677977,
+            "test_r2": -5.390278667376831
+        },
+        {
+            "horizon": "72h",
+            "model": "random_forest",
+            "validation_mae": 80.2325827673854,
+            "validation_rmse": 104.48495954420255,
+            "validation_r2": -0.06964782342034836,
+            "test_mae": 77.86983843181869,
+            "test_rmse": 94.83763133807759,
+            "test_r2": -1.0097003709827472
+        },
+        {
+            "horizon": "72h",
+            "model": "extra_trees",
+            "validation_mae": 82.36855701890124,
+            "validation_rmse": 107.61878562934409,
+            "validation_r2": -0.1347741349333782,
+            "test_mae": 79.3217057278965,
+            "test_rmse": 96.37309537147524,
+            "test_r2": -1.075303086359125
+        },
+        {
+            "horizon": "72h",
+            "model": "hist_gradient_boosting",
+            "validation_mae": 101.32162061928759,
+            "validation_rmse": 132.8970346252561,
+            "validation_r2": -0.7304690451267251,
+            "test_mae": 133.09764192016155,
+            "test_rmse": 146.30802592524233,
+            "test_r2": -3.7830642734120827
+        }
+    ]
+}

@@ -1,0 +1,149 @@
+{
+    "dataset": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\data\\processed\\model_features.csv",
+    "dataset_rows": 42860,
+    "feature_count": 55,
+    "feature_columns": [
+        "pm2_5",
+        "pm2_5_mean",
+        "pm2_5_std",
+        "pm2_5_min",
+        "pm2_5_max",
+        "sensor_count",
+        "observation_count",
+        "temperature",
+        "humidity",
+        "pressure",
+        "clouds",
+        "wind_speed",
+        "wind_direction",
+        "precipitation",
+        "hour",
+        "day_of_week",
+        "day_of_year",
+        "month",
+        "quarter",
+        "is_weekend",
+        "hour_sin",
+        "hour_cos",
+        "day_of_week_sin",
+        "day_of_week_cos",
+        "month_sin",
+        "month_cos",
+        "pm2_5_lag_1h",
+        "pm2_5_lag_3h",
+        "pm2_5_lag_6h",
+        "pm2_5_lag_12h",
+        "pm2_5_lag_24h",
+        "pm2_5_lag_48h",
+        "pm2_5_lag_72h",
+        "pm2_5_rolling_mean_6h",
+        "pm2_5_rolling_mean_12h",
+        "pm2_5_rolling_mean_24h",
+        "pm2_5_rolling_mean_48h",
+        "pm2_5_rolling_mean_72h",
+        "pm2_5_change_1h",
+        "pm2_5_change_3h",
+        "pm2_5_change_6h",
+        "pm2_5_change_24h",
+        "pm2_5_pct_change_24h",
+        "wind_direction_sin",
+        "wind_direction_cos",
+        "temperature_humidity_interaction",
+        "temperature_lag_24h",
+        "temperature_change_24h",
+        "humidity_lag_24h",
+        "humidity_change_24h",
+        "pressure_lag_24h",
+        "pressure_change_24h",
+        "wind_speed_lag_24h",
+        "wind_speed_change_24h",
+        "observation_available"
+    ],
+    "forecast_targets": {
+        "24h": "target_pm2_5_24h",
+        "48h": "target_pm2_5_48h",
+        "72h": "target_pm2_5_72h"
+    },
+    "test_size": 0.2,
+    "random_state": 42,
+    "results": {
+        "24h": {
+            "horizon": "24h",
+            "target": "target_pm2_5_24h",
+            "samples": 41279,
+            "train_samples": 33023,
+            "test_samples": 8256,
+            "random_forest": {
+                "mae": 12.828775290924494,
+                "rmse": 17.896654552450602,
+                "r2": 0.34559817210051635
+            },
+            "ridge": {
+                "mae": 13.882415984936504,
+                "rmse": 19.133975019575896,
+                "r2": 0.25198346436042274
+            },
+            "best_model": "random_forest",
+            "best_metrics": {
+                "mae": 12.828775290924494,
+                "rmse": 17.896654552450602,
+                "r2": 0.34559817210051635
+            },
+            "random_forest_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\random_forest_24h.joblib",
+            "ridge_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\ridge_24h.joblib",
+            "best_model_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\best_model_24h.joblib"
+        },
+        "48h": {
+            "horizon": "48h",
+            "target": "target_pm2_5_48h",
+            "samples": 41086,
+            "train_samples": 32868,
+            "test_samples": 8218,
+            "random_forest": {
+                "mae": 14.443860644532823,
+                "rmse": 19.69995892530596,
+                "r2": 0.20840084647153911
+            },
+            "ridge": {
+                "mae": 15.341428653142422,
+                "rmse": 20.7398069331216,
+                "r2": 0.12262733768881362
+            },
+            "best_model": "random_forest",
+            "best_metrics": {
+                "mae": 14.443860644532823,
+                "rmse": 19.69995892530596,
+                "r2": 0.20840084647153911
+            },
+            "random_forest_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\random_forest_48h.joblib",
+            "ridge_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\ridge_48h.joblib",
+            "best_model_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\best_model_48h.joblib"
+        },
+        "72h": {
+            "horizon": "72h",
+            "target": "target_pm2_5_72h",
+            "samples": 40998,
+            "train_samples": 32798,
+            "test_samples": 8200,
+            "random_forest": {
+                "mae": 14.547867165310564,
+                "rmse": 19.807379433932375,
+                "r2": 0.20066763386725928
+            },
+            "ridge": {
+                "mae": 15.63357387298758,
+                "rmse": 21.00864347551409,
+                "r2": 0.1007729173967652
+            },
+            "best_model": "random_forest",
+            "best_metrics": {
+                "mae": 14.547867165310564,
+                "rmse": 19.807379433932375,
+                "r2": 0.20066763386725928
+            },
+            "random_forest_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\random_forest_72h.joblib",
+            "ridge_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\ridge_72h.joblib",
+            "best_model_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\best_model_72h.joblib"
+        }
+    }
+}

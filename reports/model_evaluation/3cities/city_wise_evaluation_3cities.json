@@ -1,0 +1,129 @@
+{
+    "dataset": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\data\\processed\\model_features_3cities.csv",
+    "model_directory": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\3cities",
+    "test_ratio": 0.2,
+    "cities": [
+        "Lahore",
+        "Islamabad",
+        "Faisalabad"
+    ],
+    "results": [
+        {
+            "city": "Lahore",
+            "horizon": "24h",
+            "target": "target_24h",
+            "total_samples": 16316,
+            "train_samples": 13052,
+            "test_samples": 3264,
+            "test_start": "2025-08-16 04:00:00+00:00",
+            "test_end": "2025-12-30 22:00:00+00:00",
+            "mae": 33.54975457680704,
+            "rmse": 46.50657298730677,
+            "r2": 0.7965049628541816
+        },
+        {
+            "city": "Islamabad",
+            "horizon": "24h",
+            "target": "target_24h",
+            "total_samples": 5131,
+            "train_samples": 4104,
+            "test_samples": 1027,
+            "test_start": "2025-11-18 04:00:00+00:00",
+            "test_end": "2025-12-30 22:00:00+00:00",
+            "mae": 28.7022449809213,
+            "rmse": 38.77758356595869,
+            "r2": 0.2866383017268096
+        },
+        {
+            "city": "Faisalabad",
+            "horizon": "24h",
+            "target": "target_24h",
+            "total_samples": 4523,
+            "train_samples": 3618,
+            "test_samples": 905,
+            "test_start": "2025-11-23 01:00:00+00:00",
+            "test_end": "2025-12-30 22:00:00+00:00",
+            "mae": 60.64066004821452,
+            "rmse": 77.53655898643251,
+            "r2": 0.42366030929812726
+        },
+        {
+            "city": "Lahore",
+            "horizon": "48h",
+            "target": "target_48h",
+            "total_samples": 16292,
+            "train_samples": 13033,
+            "test_samples": 3259,
+            "test_start": "2025-08-15 09:00:00+00:00",
+            "test_end": "2025-12-29 22:00:00+00:00",
+            "mae": 39.154084863070324,
+            "rmse": 51.63901807325339,
+            "r2": 0.7490338903749495
+        },
+        {
+            "city": "Islamabad",
+            "horizon": "48h",
+            "target": "target_48h",
+            "total_samples": 5126,
+            "train_samples": 4100,
+            "test_samples": 1026,
+            "test_start": "2025-11-17 05:00:00+00:00",
+            "test_end": "2025-12-29 22:00:00+00:00",
+            "mae": 32.74393011684898,
+            "rmse": 45.18706180501657,
+            "r2": 0.03227125883652382
+        },
+        {
+            "city": "Faisalabad",
+            "horizon": "48h",
+            "target": "target_48h",
+            "total_samples": 4502,
+            "train_samples": 3601,
+            "test_samples": 901,
+            "test_start": "2025-11-22 06:00:00+00:00",
+            "test_end": "2025-12-29 22:00:00+00:00",
+            "mae": 69.39460771284237,
+            "rmse": 86.33344061473872,
+            "r2": 0.2830968710056362
+        },
+        {
+            "city": "Lahore",
+            "horizon": "72h",
+            "target": "target_72h",
+            "total_samples": 16268,
+            "train_samples": 13014,
+            "test_samples": 3254,
+            "test_start": "2025-08-14 14:00:00+00:00",
+            "test_end": "2025-12-28 22:00:00+00:00",
+            "mae": 42.47776185009424,
+            "rmse": 58.97956824254395,
+            "r2": 0.6726690404454982
+        },
+        {
+            "city": "Islamabad",
+            "horizon": "72h",
+            "target": "target_72h",
+            "total_samples": 5126,
+            "train_samples": 4100,
+            "test_samples": 1026,
+            "test_start": "2025-11-16 05:00:00+00:00",
+            "test_end": "2025-12-28 22:00:00+00:00",
+            "mae": 37.682286165175626,
+            "rmse": 48.649752174704915,
+            "r2": -0.12172577158904896
+        },
+        {
+            "city": "Faisalabad",
+            "horizon": "72h",
+            "target": "target_72h",
+            "total_samples": 4479,
+            "train_samples": 3583,
+            "test_samples": 896,
+            "test_start": "2025-11-21 11:00:00+00:00",
+            "test_end": "2025-12-28 22:00:00+00:00",
+            "mae": 72.87370180835966,
+            "rmse": 89.48805757490005,
+            "r2": 0.2313015110797867
+        }
+    ]
+}

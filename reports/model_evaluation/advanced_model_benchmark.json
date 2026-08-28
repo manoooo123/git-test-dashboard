@@ -1,0 +1,97 @@
+{
+    "dataset": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\data\\processed\\model_features.csv",
+    "dataset_rows": 8036,
+    "test_size": 0.2,
+    "random_state": 42,
+    "models": [
+        "persistence",
+        "random_forest",
+        "hist_gradient_boosting"
+    ],
+    "results": {
+        "24h": {
+            "horizon": "24h",
+            "target": "target_pm2_5_24h",
+            "samples": 7548,
+            "train_samples": 6038,
+            "test_samples": 1510,
+            "persistence": {
+                "mae": 52.88606497668321,
+                "rmse": 71.09484239665831,
+                "r2": 0.11284738009657247
+            },
+            "random_forest": {
+                "mae": 42.85664482122308,
+                "rmse": 56.65468347093733,
+                "r2": 0.4397133756006649
+            },
+            "hist_gradient_boosting": {
+                "mae": 49.71321975364506,
+                "rmse": 63.20036593739955,
+                "r2": 0.3027672062328689
+            },
+            "best_model": "random_forest",
+            "best_metrics": {
+                "mae": 42.85664482122308,
+                "rmse": 56.65468347093733,
+                "r2": 0.4397133756006649
+            }
+        },
+        "48h": {
+            "horizon": "48h",
+            "target": "target_pm2_5_48h",
+            "samples": 7504,
+            "train_samples": 6003,
+            "test_samples": 1501,
+            "persistence": {
+                "mae": 59.775919421190906,
+                "rmse": 79.36716689826036,
+                "r2": -0.0966685774921261
+            },
+            "random_forest": {
+                "mae": 50.98290112952092,
+                "rmse": 65.37119686877001,
+                "r2": 0.25502500089478897
+            },
+            "hist_gradient_boosting": {
+                "mae": 59.618509450019545,
+                "rmse": 74.98964048758451,
+                "r2": 0.019672087103787428
+            },
+            "best_model": "random_forest",
+            "best_metrics": {
+                "mae": 50.98290112952092,
+                "rmse": 65.37119686877001,
+                "r2": 0.25502500089478897
+            }
+        },
+        "72h": {
+            "horizon": "72h",
+            "target": "target_pm2_5_72h",
+            "samples": 7469,
+            "train_samples": 5975,
+            "test_samples": 1494,
+            "persistence": {
+                "mae": 62.851964768077906,
+                "rmse": 83.15115598636247,
+                "r2": -0.20873403259759638
+            },
+            "random_forest": {
+                "mae": 60.61670491025135,
+                "rmse": 77.73617626980464,
+                "r2": -0.059751592268425524
+            },
+            "hist_gradient_boosting": {
+                "mae": 79.21979224567606,
+                "rmse": 97.95257484297396,
+                "r2": -0.6826331545828133
+            },
+            "best_model": "random_forest",
+            "best_metrics": {
+                "mae": 60.61670491025135,
+                "rmse": 77.73617626980464,
+                "r2": -0.059751592268425524
+            }
+        }
+    }
+}

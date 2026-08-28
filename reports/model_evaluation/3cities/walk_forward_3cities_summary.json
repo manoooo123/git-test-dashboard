@@ -1,0 +1,307 @@
+{
+    "dataset": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\data\\processed\\model_features_3cities.csv",
+    "feature_count": 29,
+    "feature_columns": [
+        "sensor_count",
+        "pm25_mean",
+        "pm25_median",
+        "pm25_max",
+        "temperature",
+        "humidity",
+        "pressure",
+        "wind_speed",
+        "clouds",
+        "pm25_lag_1h",
+        "pm25_lag_3h",
+        "pm25_lag_6h",
+        "pm25_lag_12h",
+        "pm25_lag_24h",
+        "hour_of_day",
+        "day_of_week",
+        "month",
+        "day_of_year",
+        "is_weekend",
+        "hour_sin",
+        "hour_cos",
+        "month_sin",
+        "month_cos",
+        "pm25_rolling_mean_3h",
+        "pm25_rolling_mean_6h",
+        "pm25_rolling_mean_24h",
+        "pm25_rolling_std_24h",
+        "pm25_change_1h",
+        "pm25_change_24h"
+    ],
+    "results": [
+        {
+            "city": "Faisalabad",
+            "horizon": "24h",
+            "model": "persistence",
+            "mean_mae": 58.6588662267343,
+            "median_mae": 56.702139007726274,
+            "mean_rmse": 78.1928940204792,
+            "mean_r2": 0.3751052213236677,
+            "folds": 3
+        },
+        {
+            "city": "Faisalabad",
+            "horizon": "24h",
+            "model": "random_forest",
+            "mean_mae": 56.593991124575105,
+            "median_mae": 55.521854926164096,
+            "mean_rmse": 74.40160483877312,
+            "mean_r2": 0.4368145529593641,
+            "folds": 3
+        },
+        {
+            "city": "Faisalabad",
+            "horizon": "24h",
+            "model": "ridge",
+            "mean_mae": 57.969197506814744,
+            "median_mae": 56.531305641331535,
+            "mean_rmse": 74.35811569385083,
+            "mean_r2": 0.4398468763093451,
+            "folds": 3
+        },
+        {
+            "city": "Faisalabad",
+            "horizon": "48h",
+            "model": "persistence",
+            "mean_mae": 71.34579801619573,
+            "median_mae": 63.79998465273026,
+            "mean_rmse": 91.57831070742135,
+            "mean_r2": 0.15149582411722098,
+            "folds": 3
+        },
+        {
+            "city": "Faisalabad",
+            "horizon": "48h",
+            "model": "random_forest",
+            "mean_mae": 65.69917821397314,
+            "median_mae": 61.79864795559389,
+            "mean_rmse": 85.14737859334566,
+            "mean_r2": 0.26320419470686046,
+            "folds": 3
+        },
+        {
+            "city": "Faisalabad",
+            "horizon": "48h",
+            "model": "ridge",
+            "mean_mae": 66.27463196593779,
+            "median_mae": 67.17225888381022,
+            "mean_rmse": 82.13716804513929,
+            "mean_r2": 0.3178251358440164,
+            "folds": 3
+        },
+        {
+            "city": "Faisalabad",
+            "horizon": "72h",
+            "model": "persistence",
+            "mean_mae": 77.56238704145301,
+            "median_mae": 61.848846661181845,
+            "mean_rmse": 97.28162788138339,
+            "mean_r2": 0.018170227110458126,
+            "folds": 3
+        },
+        {
+            "city": "Faisalabad",
+            "horizon": "72h",
+            "model": "random_forest",
+            "mean_mae": 71.26188726955978,
+            "median_mae": 70.92705140735916,
+            "mean_rmse": 89.4898284178832,
+            "mean_r2": 0.1850006722375155,
+            "folds": 3
+        },
+        {
+            "city": "Faisalabad",
+            "horizon": "72h",
+            "model": "ridge",
+            "mean_mae": 75.75069504898615,
+            "median_mae": 85.542489000467,
+            "mean_rmse": 92.57729403095648,
+            "mean_r2": 0.10926814754910612,
+            "folds": 3
+        },
+        {
+            "city": "Islamabad",
+            "horizon": "24h",
+            "model": "persistence",
+            "mean_mae": 23.001198515849186,
+            "median_mae": 21.13498569359071,
+            "mean_rmse": 31.40495085039727,
+            "mean_r2": 0.4039982156399821,
+            "folds": 3
+        },
+        {
+            "city": "Islamabad",
+            "horizon": "24h",
+            "model": "random_forest",
+            "mean_mae": 26.447998414210726,
+            "median_mae": 24.658938336472264,
+            "mean_rmse": 33.839508347871266,
+            "mean_r2": 0.27195052175684564,
+            "folds": 3
+        },
+        {
+            "city": "Islamabad",
+            "horizon": "24h",
+            "model": "ridge",
+            "mean_mae": 23.90230499942898,
+            "median_mae": 21.633035570088804,
+            "mean_rmse": 31.048693314778408,
+            "mean_r2": 0.39945827152536495,
+            "folds": 3
+        },
+        {
+            "city": "Islamabad",
+            "horizon": "48h",
+            "model": "persistence",
+            "mean_mae": 29.522295445650016,
+            "median_mae": 24.282468415655387,
+            "mean_rmse": 38.887420953152855,
+            "mean_r2": 0.10916436984616255,
+            "folds": 3
+        },
+        {
+            "city": "Islamabad",
+            "horizon": "48h",
+            "model": "random_forest",
+            "mean_mae": 30.291037071201142,
+            "median_mae": 28.009778180886475,
+            "mean_rmse": 38.48791287852342,
+            "mean_r2": 0.08555570732878981,
+            "folds": 3
+        },
+        {
+            "city": "Islamabad",
+            "horizon": "48h",
+            "model": "ridge",
+            "mean_mae": 29.08205608323335,
+            "median_mae": 25.1201175783782,
+            "mean_rmse": 37.544625787677425,
+            "mean_r2": 0.14725073263433344,
+            "folds": 3
+        },
+        {
+            "city": "Islamabad",
+            "horizon": "72h",
+            "model": "persistence",
+            "mean_mae": 34.06705366268789,
+            "median_mae": 25.369126186357487,
+            "mean_rmse": 44.379476246919104,
+            "mean_r2": -0.13287302375819532,
+            "folds": 3
+        },
+        {
+            "city": "Islamabad",
+            "horizon": "72h",
+            "model": "random_forest",
+            "mean_mae": 33.28355288275658,
+            "median_mae": 29.105058107938163,
+            "mean_rmse": 40.5856971406858,
+            "mean_r2": -0.009520761722609553,
+            "folds": 3
+        },
+        {
+            "city": "Islamabad",
+            "horizon": "72h",
+            "model": "ridge",
+            "mean_mae": 31.935586050524112,
+            "median_mae": 25.63432856350884,
+            "mean_rmse": 40.2938081716593,
+            "mean_r2": 0.03491208576795912,
+            "folds": 3
+        },
+        {
+            "city": "Lahore",
+            "horizon": "24h",
+            "model": "persistence",
+            "mean_mae": 26.04305631912801,
+            "median_mae": 20.418367959603795,
+            "mean_rmse": 36.581164578277075,
+            "mean_r2": 0.2752624906417055,
+            "folds": 3
+        },
+        {
+            "city": "Lahore",
+            "horizon": "24h",
+            "model": "random_forest",
+            "mean_mae": 28.918818606050454,
+            "median_mae": 22.589032450872036,
+            "mean_rmse": 38.65811372037288,
+            "mean_r2": 0.3342586077716345,
+            "folds": 3
+        },
+        {
+            "city": "Lahore",
+            "horizon": "24h",
+            "model": "ridge",
+            "mean_mae": 30.474261278926477,
+            "median_mae": 27.298530984453134,
+            "mean_rmse": 39.47843739656236,
+            "mean_r2": 0.23757606536729328,
+            "folds": 3
+        },
+        {
+            "city": "Lahore",
+            "horizon": "48h",
+            "model": "persistence",
+            "mean_mae": 31.641467737740346,
+            "median_mae": 23.729611835599922,
+            "mean_rmse": 43.268987163356705,
+            "mean_r2": 0.10833625605936092,
+            "folds": 3
+        },
+        {
+            "city": "Lahore",
+            "horizon": "48h",
+            "model": "random_forest",
+            "mean_mae": 33.10803322133527,
+            "median_mae": 26.553635034067714,
+            "mean_rmse": 44.60695900224122,
+            "mean_r2": 0.17830337522907033,
+            "folds": 3
+        },
+        {
+            "city": "Lahore",
+            "horizon": "48h",
+            "model": "ridge",
+            "mean_mae": 35.60913145646351,
+            "median_mae": 33.59304328304156,
+            "mean_rmse": 44.80040855687821,
+            "mean_r2": 0.06893936845212896,
+            "folds": 3
+        },
+        {
+            "city": "Lahore",
+            "horizon": "72h",
+            "model": "persistence",
+            "mean_mae": 35.09076513664994,
+            "median_mae": 27.060728163047013,
+            "mean_rmse": 47.11686707327033,
+            "mean_r2": -0.09131476017110822,
+            "folds": 3
+        },
+        {
+            "city": "Lahore",
+            "horizon": "72h",
+            "model": "random_forest",
+            "mean_mae": 34.4470356623936,
+            "median_mae": 27.165366730786804,
+            "mean_rmse": 46.05255716263377,
+            "mean_r2": 0.11913641243016249,
+            "folds": 3
+        },
+        {
+            "city": "Lahore",
+            "horizon": "72h",
+            "model": "ridge",
+            "mean_mae": 38.33595685823324,
+            "median_mae": 35.732014716389855,
+            "mean_rmse": 47.90801947163982,
+            "mean_r2": -0.05603466437507931,
+            "folds": 3
+        }
+    ]
+}

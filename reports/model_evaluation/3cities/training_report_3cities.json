@@ -1,0 +1,345 @@
+{
+    "dataset": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\data\\processed\\model_features_3cities.csv",
+    "dataset_rows": 28698,
+    "feature_count": 29,
+    "feature_columns": [
+        "sensor_count",
+        "pm25_mean",
+        "pm25_median",
+        "pm25_max",
+        "temperature",
+        "humidity",
+        "pressure",
+        "wind_speed",
+        "clouds",
+        "pm25_lag_1h",
+        "pm25_lag_3h",
+        "pm25_lag_6h",
+        "pm25_lag_12h",
+        "pm25_lag_24h",
+        "hour_of_day",
+        "day_of_week",
+        "month",
+        "day_of_year",
+        "is_weekend",
+        "hour_sin",
+        "hour_cos",
+        "month_sin",
+        "month_cos",
+        "pm25_rolling_mean_3h",
+        "pm25_rolling_mean_6h",
+        "pm25_rolling_mean_24h",
+        "pm25_rolling_std_24h",
+        "pm25_change_1h",
+        "pm25_change_24h"
+    ],
+    "forecast_targets": {
+        "24h": "target_24h",
+        "48h": "target_48h",
+        "72h": "target_72h"
+    },
+    "test_size": 0.2,
+    "random_state": 42,
+    "results": {
+        "24h": {
+            "horizon": "24h",
+            "target": "target_24h",
+            "samples": 25970,
+            "train_samples": 20774,
+            "test_samples": 5196,
+            "random_forest": {
+                "MAE": 37.526258419756516,
+                "RMSE": 52.59300465705313,
+                "R2": 0.7411591551525285
+            },
+            "random_forest_by_city": {
+                "Faisalabad": {
+                    "MAE": 62.123150587064096,
+                    "RMSE": 76.91343650657198,
+                    "R2": 0.4328865929292097
+                },
+                "Islamabad": {
+                    "MAE": 33.340447017830805,
+                    "RMSE": 43.70864247666054,
+                    "R2": 0.09367712998847366
+                },
+                "Lahore": {
+                    "MAE": 32.02339104793185,
+                    "RMSE": 46.496582155227806,
+                    "R2": 0.7965923856090515
+                }
+            },
+            "ridge": {
+                "MAE": 37.153008022844986,
+                "RMSE": 51.7755876995099,
+                "R2": 0.7491425996795131
+            },
+            "ridge_by_city": {
+                "Faisalabad": {
+                    "MAE": 60.71408170123436,
+                    "RMSE": 77.6348160047946,
+                    "R2": 0.4221986684490697
+                },
+                "Islamabad": {
+                    "MAE": 28.414961206047646,
+                    "RMSE": 38.30467307905061,
+                    "R2": 0.3039317527347779
+                },
+                "Lahore": {
+                    "MAE": 33.36967542539047,
+                    "RMSE": 46.20237734218053,
+                    "R2": 0.7991583449985626
+                }
+            },
+            "deep_learning_mlp": {
+                "MAE": 55.9811841438935,
+                "RMSE": 82.40184432588553,
+                "R2": 0.3645948839496924
+            },
+            "deep_learning_mlp_by_city": {
+                "Faisalabad": {
+                    "MAE": 75.14338111828283,
+                    "RMSE": 94.65151886345328,
+                    "R2": 0.14114340058911956
+                },
+                "Islamabad": {
+                    "MAE": 30.199547937889577,
+                    "RMSE": 37.94528370422166,
+                    "R2": 0.316932045653848
+                },
+                "Lahore": {
+                    "MAE": 58.7801890831532,
+                    "RMSE": 88.7250350589878,
+                    "R2": 0.25934236306086644
+                }
+            },
+            "best_model": "Ridge",
+            "best_metrics": {
+                "MAE": 37.153008022844986,
+                "RMSE": 51.7755876995099,
+                "R2": 0.7491425996795131
+            },
+            "best_by_city": {
+                "Faisalabad": {
+                    "MAE": 60.71408170123436,
+                    "RMSE": 77.6348160047946,
+                    "R2": 0.4221986684490697
+                },
+                "Islamabad": {
+                    "MAE": 28.414961206047646,
+                    "RMSE": 38.30467307905061,
+                    "R2": 0.3039317527347779
+                },
+                "Lahore": {
+                    "MAE": 33.36967542539047,
+                    "RMSE": 46.20237734218053,
+                    "R2": 0.7991583449985626
+                }
+            },
+            "random_forest_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\3cities\\random_forest_24h.joblib",
+            "ridge_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\3cities\\ridge_24h.joblib",
+            "deep_learning_mlp_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\3cities\\deep_learning_24h.joblib",
+            "best_model_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\3cities\\best_model_24h.joblib"
+        },
+        "48h": {
+            "horizon": "48h",
+            "target": "target_48h",
+            "samples": 25920,
+            "train_samples": 20734,
+            "test_samples": 5186,
+            "random_forest": {
+                "MAE": 43.727499976192284,
+                "RMSE": 60.368668094757055,
+                "R2": 0.6578408520629575
+            },
+            "random_forest_by_city": {
+                "Faisalabad": {
+                    "MAE": 67.2298862352958,
+                    "RMSE": 83.80787640432278,
+                    "R2": 0.3244273637178955
+                },
+                "Islamabad": {
+                    "MAE": 33.00313868700539,
+                    "RMSE": 43.139216900604566,
+                    "R2": 0.11799723292024733
+                },
+                "Lahore": {
+                    "MAE": 40.60615743653398,
+                    "RMSE": 57.197377051133174,
+                    "R2": 0.6920988192192934
+                }
+            },
+            "ridge": {
+                "MAE": 42.9322740743454,
+                "RMSE": 57.804732138598645,
+                "R2": 0.6862875507080889
+            },
+            "ridge_by_city": {
+                "Faisalabad": {
+                    "MAE": 69.45168144386444,
+                    "RMSE": 86.3971188462217,
+                    "R2": 0.28203892731983793
+                },
+                "Islamabad": {
+                    "MAE": 32.302395507386606,
+                    "RMSE": 44.55187147073336,
+                    "R2": 0.05928658510106688
+                },
+                "Lahore": {
+                    "MAE": 38.94708517276917,
+                    "RMSE": 51.26948408957885,
+                    "R2": 0.7526129156752277
+                }
+            },
+            "deep_learning_mlp": {
+                "MAE": 50.044735667214155,
+                "RMSE": 70.75768014523706,
+                "R2": 0.5299412527131794
+            },
+            "deep_learning_mlp_by_city": {
+                "Faisalabad": {
+                    "MAE": 84.32548440296458,
+                    "RMSE": 106.43333736499825,
+                    "R2": -0.0895765265549715
+                },
+                "Islamabad": {
+                    "MAE": 52.326449974360784,
+                    "RMSE": 65.82462980457602,
+                    "R2": -1.0535358260487864
+                },
+                "Lahore": {
+                    "MAE": 39.848972092484615,
+                    "RMSE": 58.916181852696354,
+                    "R2": 0.6733156607643009
+                }
+            },
+            "best_model": "Ridge",
+            "best_metrics": {
+                "MAE": 42.9322740743454,
+                "RMSE": 57.804732138598645,
+                "R2": 0.6862875507080889
+            },
+            "best_by_city": {
+                "Faisalabad": {
+                    "MAE": 69.45168144386444,
+                    "RMSE": 86.3971188462217,
+                    "R2": 0.28203892731983793
+                },
+                "Islamabad": {
+                    "MAE": 32.302395507386606,
+                    "RMSE": 44.55187147073336,
+                    "R2": 0.05928658510106688
+                },
+                "Lahore": {
+                    "MAE": 38.94708517276917,
+                    "RMSE": 51.26948408957885,
+                    "R2": 0.7526129156752277
+                }
+            },
+            "random_forest_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\3cities\\random_forest_48h.joblib",
+            "ridge_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\3cities\\ridge_48h.joblib",
+            "deep_learning_mlp_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\3cities\\deep_learning_48h.joblib",
+            "best_model_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\3cities\\best_model_48h.joblib"
+        },
+        "72h": {
+            "horizon": "72h",
+            "target": "target_72h",
+            "samples": 25873,
+            "train_samples": 20697,
+            "test_samples": 5176,
+            "random_forest": {
+                "MAE": 46.73741044277608,
+                "RMSE": 63.368154755978544,
+                "R2": 0.6231804308170839
+            },
+            "random_forest_by_city": {
+                "Faisalabad": {
+                    "MAE": 72.46199479608593,
+                    "RMSE": 88.94944096152886,
+                    "R2": 0.2405270497966394
+                },
+                "Islamabad": {
+                    "MAE": 37.69841140418254,
+                    "RMSE": 48.498343014648995,
+                    "R2": -0.11475450207466964
+                },
+                "Lahore": {
+                    "MAE": 42.50409312041324,
+                    "RMSE": 58.88209994920284,
+                    "R2": 0.6737500259020104
+                }
+            },
+            "ridge": {
+                "MAE": 46.631175543156594,
+                "RMSE": 62.23711553312444,
+                "R2": 0.6365118644566741
+            },
+            "ridge_by_city": {
+                "Faisalabad": {
+                    "MAE": 74.6497309227907,
+                    "RMSE": 92.25516965507788,
+                    "R2": 0.18302778181168466
+                },
+                "Islamabad": {
+                    "MAE": 37.153240294625235,
+                    "RMSE": 50.828674635527314,
+                    "R2": -0.2244554947053694
+                },
+                "Lahore": {
+                    "MAE": 41.90460392202599,
+                    "RMSE": 54.80149194110366,
+                    "R2": 0.7174022694950395
+                }
+            },
+            "deep_learning_mlp": {
+                "MAE": 53.7497958990578,
+                "RMSE": 74.49790627677481,
+                "R2": 0.47918982366178253
+            },
+            "deep_learning_mlp_by_city": {
+                "Faisalabad": {
+                    "MAE": 80.32547114598954,
+                    "RMSE": 103.49526995380393,
+                    "R2": -0.02817459299269709
+                },
+                "Islamabad": {
+                    "MAE": 63.91616613708017,
+                    "RMSE": 79.98166882043078,
+                    "R2": -2.0318405431161914
+                },
+                "Lahore": {
+                    "MAE": 43.22659341428158,
+                    "RMSE": 62.14212714532927,
+                    "R2": 0.6366240869266566
+                }
+            },
+            "best_model": "Ridge",
+            "best_metrics": {
+                "MAE": 46.631175543156594,
+                "RMSE": 62.23711553312444,
+                "R2": 0.6365118644566741
+            },
+            "best_by_city": {
+                "Faisalabad": {
+                    "MAE": 74.6497309227907,
+                    "RMSE": 92.25516965507788,
+                    "R2": 0.18302778181168466
+                },
+                "Islamabad": {
+                    "MAE": 37.153240294625235,
+                    "RMSE": 50.828674635527314,
+                    "R2": -0.2244554947053694
+                },
+                "Lahore": {
+                    "MAE": 41.90460392202599,
+                    "RMSE": 54.80149194110366,
+                    "R2": 0.7174022694950395
+                }
+            },
+            "random_forest_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\3cities\\random_forest_72h.joblib",
+            "ridge_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\3cities\\ridge_72h.joblib",
+            "deep_learning_mlp_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\3cities\\deep_learning_72h.joblib",
+            "best_model_path": "C:\\Users\\Rimsha\\PycharmProjects\\Pearls-AQI-Predictor\\models\\3cities\\best_model_72h.joblib"
+        }
+    }
+}

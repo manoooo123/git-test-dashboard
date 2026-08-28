@@ -1,0 +1,143 @@
+{
+    "day_1": [
+        {
+            "model": "random_forest_residual",
+            "mean_mae": 26.35702298564393,
+            "median_mae": 30.122245657679542,
+            "mean_rmse": 35.26081840880039,
+            "folds": 8,
+            "mae_improvement_percent": 4.1892311026244045,
+            "beats_persistence": true
+        },
+        {
+            "model": "extra_trees_residual",
+            "mean_mae": 26.39071525195807,
+            "median_mae": 30.613975452263112,
+            "mean_rmse": 36.03891191514964,
+            "folds": 8,
+            "mae_improvement_percent": 4.06675589200554,
+            "beats_persistence": true
+        },
+        {
+            "model": "persistence",
+            "mean_mae": 27.50945774568968,
+            "median_mae": 31.288430558630292,
+            "mean_rmse": 37.74319692375487,
+            "folds": 8,
+            "mae_improvement_percent": 0.0,
+            "beats_persistence": false
+        },
+        {
+            "model": "hist_gradient_residual",
+            "mean_mae": 28.13287376695784,
+            "median_mae": 30.53530375141465,
+            "mean_rmse": 36.35759636545297,
+            "folds": 8,
+            "mae_improvement_percent": -2.2661879671759046,
+            "beats_persistence": false
+        },
+        {
+            "model": "ridge_residual",
+            "mean_mae": 32.52249499666993,
+            "median_mae": 31.862029498926695,
+            "mean_rmse": 40.924976066575205,
+            "folds": 8,
+            "mae_improvement_percent": -18.222959163074435,
+            "beats_persistence": false
+        }
+    ],
+    "day_2": [
+        {
+            "model": "random_forest_residual",
+            "mean_mae": 37.1242459457578,
+            "median_mae": 39.143107948489124,
+            "mean_rmse": 49.30905145590419,
+            "folds": 8,
+            "mae_improvement_percent": 6.100526826378826,
+            "beats_persistence": true
+        },
+        {
+            "model": "extra_trees_residual",
+            "mean_mae": 37.68672212696653,
+            "median_mae": 39.58175716644092,
+            "mean_rmse": 50.139723838313415,
+            "folds": 8,
+            "mae_improvement_percent": 4.677838883696308,
+            "beats_persistence": true
+        },
+        {
+            "model": "hist_gradient_residual",
+            "mean_mae": 39.487378478611156,
+            "median_mae": 39.77357873218216,
+            "mean_rmse": 50.62940149426714,
+            "folds": 8,
+            "mae_improvement_percent": 0.12338455125791103,
+            "beats_persistence": true
+        },
+        {
+            "model": "persistence",
+            "mean_mae": 39.536159992202144,
+            "median_mae": 40.8999552778264,
+            "mean_rmse": 53.24041218513465,
+            "folds": 8,
+            "mae_improvement_percent": 0.0,
+            "beats_persistence": false
+        },
+        {
+            "model": "ridge_residual",
+            "mean_mae": 44.195520856653395,
+            "median_mae": 41.510962383995626,
+            "mean_rmse": 54.42598934740228,
+            "folds": 8,
+            "mae_improvement_percent": -11.785061739355147,
+            "beats_persistence": false
+        }
+    ],
+    "day_3": [
+        {
+            "model": "random_forest_residual",
+            "mean_mae": 39.33776029716105,
+            "median_mae": 32.95839506836424,
+            "mean_rmse": 52.331058508139826,
+            "folds": 7,
+            "mae_improvement_percent": 6.244346825351981,
+            "beats_persistence": true
+        },
+        {
+            "model": "extra_trees_residual",
+            "mean_mae": 39.51915106853197,
+            "median_mae": 33.01829802434214,
+            "mean_rmse": 52.695146713279705,
+            "folds": 7,
+            "mae_improvement_percent": 5.8120291203970975,
+            "beats_persistence": true
+        },
+        {
+            "model": "hist_gradient_residual",
+            "mean_mae": 40.85158929728849,
+            "median_mae": 35.9902667250726,
+            "mean_rmse": 53.172238205395885,
+            "folds": 7,
+            "mae_improvement_percent": 2.6363623943747108,
+            "beats_persistence": true
+        },
+        {
+            "model": "persistence",
+            "mean_mae": 41.95774757590635,
+            "median_mae": 37.213051467292175,
+            "mean_rmse": 56.428166938744916,
+            "folds": 7,
+            "mae_improvement_percent": 0.0,
+            "beats_persistence": false
+        },
+        {
+            "model": "ridge_residual",
+            "mean_mae": 45.87334068094589,
+            "median_mae": 37.74682743695669,
+            "mean_rmse": 56.47193544127081,
+            "folds": 7,
+            "mae_improvement_percent": -9.332229042933678,
+            "beats_persistence": false
+        }
+    ]
+}

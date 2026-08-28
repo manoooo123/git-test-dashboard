@@ -1,0 +1,42 @@
+{
+    "dataset": "Pearls AQI Predictor",
+    "baseline_type": "persistence_lag",
+    "results": {
+        "24": {
+            "horizon_hours": 24,
+            "baseline": "persistence_lag",
+            "samples": 13856,
+            "target_column": "target_pm2_5_24h",
+            "prediction_column": "pm2_5_lag_24h",
+            "metrics": {
+                "mae": 39.76194055302952,
+                "rmse": 61.85681267436725,
+                "r2": 0.5590030339203383
+            }
+        },
+        "48": {
+            "horizon_hours": 48,
+            "baseline": "persistence_lag",
+            "samples": 13625,
+            "target_column": "target_pm2_5_48h",
+            "prediction_column": "pm2_5_lag_48h",
+            "metrics": {
+                "mae": 44.221338274056606,
+                "rmse": 66.75071295574213,
+                "r2": 0.48811520459203683
+            }
+        },
+        "72": {
+            "horizon_hours": 72,
+            "baseline": "persistence_lag",
+            "samples": 13519,
+            "target_column": "target_pm2_5_72h",
+            "prediction_column": "pm2_5_lag_72h",
+            "metrics": {
+                "mae": 45.119532273735665,
+                "rmse": 67.76292249007678,
+                "r2": 0.476518145064466
+            }
+        }
+    }
+}

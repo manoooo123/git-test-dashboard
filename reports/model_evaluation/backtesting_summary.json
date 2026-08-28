@@ -1,0 +1,195 @@
+{
+    "project": "Pearls AQI Predictor",
+    "evaluation_method": "chronological holdout",
+    "baseline_method": "validated time-aware features",
+    "best_test_models": [
+        {
+            "horizon": "24h",
+            "model": "persistence",
+            "mae": 38.22803091657603,
+            "rmse": 51.17053405877377,
+            "r2": 0.4323357294798602,
+            "evaluation_rows": 1176
+        },
+        {
+            "horizon": "48h",
+            "model": "persistence",
+            "mae": 49.36751623435332,
+            "rmse": 64.5028785343473,
+            "r2": 0.07844380643628723,
+            "evaluation_rows": 1153
+        },
+        {
+            "horizon": "72h",
+            "model": "persistence",
+            "mae": 53.02500540869428,
+            "rmse": 69.76081962799684,
+            "r2": -0.08740935446692322,
+            "evaluation_rows": 1131
+        }
+    ],
+    "all_results": [
+        {
+            "horizon": "24h",
+            "model": "persistence",
+            "evaluation_set": "test",
+            "evaluation_rows": 1176,
+            "mae": 38.22803091657603,
+            "rmse": 51.17053405877377,
+            "r2": 0.4323357294798602
+        },
+        {
+            "horizon": "24h",
+            "model": "lag_24h",
+            "evaluation_set": "test",
+            "evaluation_rows": 1171,
+            "mae": 48.973331056007865,
+            "rmse": 64.09181526629672,
+            "r2": 0.1007147921542153
+        },
+        {
+            "horizon": "24h",
+            "model": "random_forest",
+            "evaluation_set": "validation",
+            "evaluation_rows": 1199,
+            "mae": 59.51852131616544,
+            "rmse": 80.7729056330306,
+            "r2": 0.3521995298544913
+        },
+        {
+            "horizon": "24h",
+            "model": "random_forest",
+            "evaluation_set": "test",
+            "evaluation_rows": 1176,
+            "mae": 63.71003755308531,
+            "rmse": 79.99847079813614,
+            "r2": -0.38744262088693815
+        },
+        {
+            "horizon": "24h",
+            "model": "extra_trees",
+            "evaluation_set": "validation",
+            "evaluation_rows": 1199,
+            "mae": 63.89511331404088,
+            "rmse": 85.96644469072729,
+            "r2": 0.26621677533153354
+        },
+        {
+            "horizon": "24h",
+            "model": "extra_trees",
+            "evaluation_set": "test",
+            "evaluation_rows": 1176,
+            "mae": 63.13809359819076,
+            "rmse": 79.39217235746091,
+            "r2": -0.36649180525409886
+        },
+        {
+            "horizon": "48h",
+            "model": "persistence",
+            "evaluation_set": "test",
+            "evaluation_rows": 1153,
+            "mae": 49.36751623435332,
+            "rmse": 64.5028785343473,
+            "r2": 0.07844380643628723
+        },
+        {
+            "horizon": "48h",
+            "model": "lag_24h",
+            "evaluation_set": "test",
+            "evaluation_rows": 1147,
+            "mae": 52.49582751226833,
+            "rmse": 69.31919303009853,
+            "r2": -0.0688118031848004
+        },
+        {
+            "horizon": "48h",
+            "model": "random_forest",
+            "evaluation_set": "validation",
+            "evaluation_rows": 1198,
+            "mae": 72.79139559795942,
+            "rmse": 96.28902514110143,
+            "r2": 0.08529926350074946
+        },
+        {
+            "horizon": "48h",
+            "model": "random_forest",
+            "evaluation_set": "test",
+            "evaluation_rows": 1153,
+            "mae": 74.87359981830612,
+            "rmse": 91.1064586457594,
+            "r2": -0.8384929190357573
+        },
+        {
+            "horizon": "48h",
+            "model": "extra_trees",
+            "evaluation_set": "validation",
+            "evaluation_rows": 1198,
+            "mae": 78.30170012803545,
+            "rmse": 103.81137549179346,
+            "r2": -0.06320091100271363
+        },
+        {
+            "horizon": "48h",
+            "model": "extra_trees",
+            "evaluation_set": "test",
+            "evaluation_rows": 1153,
+            "mae": 78.66306119885263,
+            "rmse": 95.11960625514006,
+            "r2": -1.0040276893207487
+        },
+        {
+            "horizon": "72h",
+            "model": "persistence",
+            "evaluation_set": "test",
+            "evaluation_rows": 1131,
+            "mae": 53.02500540869428,
+            "rmse": 69.76081962799684,
+            "r2": -0.08740935446692322
+        },
+        {
+            "horizon": "72h",
+            "model": "lag_24h",
+            "evaluation_set": "test",
+            "evaluation_rows": 1125,
+            "mae": 55.09712957011516,
+            "rmse": 72.64648600588286,
+            "r2": -0.17985858324053328
+        },
+        {
+            "horizon": "72h",
+            "model": "random_forest",
+            "evaluation_set": "validation",
+            "evaluation_rows": 1195,
+            "mae": 80.32620213187954,
+            "rmse": 104.47136880953236,
+            "r2": -0.06936957563497104
+        },
+        {
+            "horizon": "72h",
+            "model": "random_forest",
+            "evaluation_set": "test",
+            "evaluation_rows": 1131,
+            "mae": 78.5219202563245,
+            "rmse": 95.43398027527175,
+            "r2": -1.035054246981637
+        },
+        {
+            "horizon": "72h",
+            "model": "extra_trees",
+            "evaluation_set": "validation",
+            "evaluation_rows": 1195,
+            "mae": 82.44586650942512,
+            "rmse": 107.69598611414405,
+            "r2": -0.13640278247232707
+        },
+        {
+            "horizon": "72h",
+            "model": "extra_trees",
+            "evaluation_set": "test",
+            "evaluation_rows": 1131,
+            "mae": 78.83338016162242,
+            "rmse": 95.85369452183394,
+            "r2": -1.0529937585573332
+        }
+    ]
+}

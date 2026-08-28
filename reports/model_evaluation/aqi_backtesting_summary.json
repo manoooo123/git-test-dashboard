@@ -1,0 +1,329 @@
+{
+    "project": "Pearls AQI Predictor",
+    "target": "calculated Punjab-aligned AQI",
+    "evaluation": "chronological train/validation/test",
+    "selected_models": [
+        {
+            "horizon": "day_1",
+            "selected_model": "random_forest",
+            "validation_mae": 32.8708197811963,
+            "test_mae": 30.09803201076639,
+            "test_rmse": 40.43716092233409,
+            "test_r2": 0.37027661776474474
+        },
+        {
+            "horizon": "day_2",
+            "selected_model": "extra_trees",
+            "validation_mae": 38.095218364142,
+            "test_mae": 44.445006265987075,
+            "test_rmse": 60.34151600782066,
+            "test_r2": -0.9139490176323841
+        },
+        {
+            "horizon": "day_3",
+            "selected_model": "extra_trees",
+            "validation_mae": 39.7926732386045,
+            "test_mae": 42.08428048892237,
+            "test_rmse": 59.09336926014515,
+            "test_r2": -0.459263829908912
+        }
+    ],
+    "baseline_comparison": [
+        {
+            "horizon": "day_1",
+            "selected_model": "random_forest",
+            "baseline_mae": 21.750103104992593,
+            "model_mae": 30.09803201076639,
+            "mae_improvement_percent": -38.38110038134754,
+            "model_beats_baseline": false
+        },
+        {
+            "horizon": "day_2",
+            "selected_model": "extra_trees",
+            "baseline_mae": 32.49515055745617,
+            "model_mae": 44.445006265987075,
+            "mae_improvement_percent": -36.77427401790865,
+            "model_beats_baseline": false
+        },
+        {
+            "horizon": "day_3",
+            "selected_model": "extra_trees",
+            "baseline_mae": 38.187980825018755,
+            "model_mae": 42.08428048892237,
+            "mae_improvement_percent": -10.20294757598433,
+            "model_beats_baseline": false
+        }
+    ],
+    "all_results": [
+        {
+            "horizon": "day_1",
+            "model": "persistence",
+            "evaluation_set": "test",
+            "evaluation_rows": 75,
+            "mae": 21.750103104992593,
+            "rmse": 37.00703334752547,
+            "r2": 0.4725794471707876
+        },
+        {
+            "horizon": "day_1",
+            "model": "seasonal_7d",
+            "evaluation_set": "test",
+            "evaluation_rows": 70,
+            "mae": 49.85680024800961,
+            "rmse": 83.85301712285549,
+            "r2": -1.56196194431719
+        },
+        {
+            "horizon": "day_1",
+            "model": "ridge",
+            "evaluation_set": "validation",
+            "evaluation_rows": 56,
+            "mae": 38.372181024753445,
+            "rmse": 47.07772400381712,
+            "r2": 0.17859983272440583
+        },
+        {
+            "horizon": "day_1",
+            "model": "ridge",
+            "evaluation_set": "test",
+            "evaluation_rows": 75,
+            "mae": 35.742382791464046,
+            "rmse": 45.82708376718854,
+            "r2": 0.19121525755526547
+        },
+        {
+            "horizon": "day_1",
+            "model": "random_forest",
+            "evaluation_set": "validation",
+            "evaluation_rows": 56,
+            "mae": 32.8708197811963,
+            "rmse": 43.2184985762876,
+            "r2": 0.30774959173877336
+        },
+        {
+            "horizon": "day_1",
+            "model": "random_forest",
+            "evaluation_set": "test",
+            "evaluation_rows": 75,
+            "mae": 30.09803201076639,
+            "rmse": 40.43716092233409,
+            "r2": 0.37027661776474474
+        },
+        {
+            "horizon": "day_1",
+            "model": "extra_trees",
+            "evaluation_set": "validation",
+            "evaluation_rows": 56,
+            "mae": 33.73437606388416,
+            "rmse": 47.20478957391444,
+            "r2": 0.17415983332242235
+        },
+        {
+            "horizon": "day_1",
+            "model": "extra_trees",
+            "evaluation_set": "test",
+            "evaluation_rows": 75,
+            "mae": 27.728987323143,
+            "rmse": 39.41655173181215,
+            "r2": 0.4016631325965381
+        },
+        {
+            "horizon": "day_1",
+            "model": "hist_gradient_boosting",
+            "evaluation_set": "validation",
+            "evaluation_rows": 56,
+            "mae": 35.12201428758691,
+            "rmse": 44.61789655077222,
+            "r2": 0.2621942179295643
+        },
+        {
+            "horizon": "day_1",
+            "model": "hist_gradient_boosting",
+            "evaluation_set": "test",
+            "evaluation_rows": 75,
+            "mae": 25.314122674642224,
+            "rmse": 34.53891558979239,
+            "r2": 0.5405842258675839
+        },
+        {
+            "horizon": "day_2",
+            "model": "persistence",
+            "evaluation_set": "test",
+            "evaluation_rows": 73,
+            "mae": 32.49515055745617,
+            "rmse": 52.90290549163305,
+            "r2": -0.4711500819982002
+        },
+        {
+            "horizon": "day_2",
+            "model": "seasonal_7d",
+            "evaluation_set": "test",
+            "evaluation_rows": 69,
+            "mae": 55.342664929449796,
+            "rmse": 91.62278912223225,
+            "r2": -3.365518528080429
+        },
+        {
+            "horizon": "day_2",
+            "model": "ridge",
+            "evaluation_set": "validation",
+            "evaluation_rows": 56,
+            "mae": 57.13965658065765,
+            "rmse": 67.18144089779011,
+            "r2": -0.5295217513971504
+        },
+        {
+            "horizon": "day_2",
+            "model": "ridge",
+            "evaluation_set": "test",
+            "evaluation_rows": 73,
+            "mae": 47.62009810970748,
+            "rmse": 64.47119682236044,
+            "r2": -1.1848890883514724
+        },
+        {
+            "horizon": "day_2",
+            "model": "random_forest",
+            "evaluation_set": "validation",
+            "evaluation_rows": 56,
+            "mae": 38.28386971328265,
+            "rmse": 51.86858435893043,
+            "r2": 0.08827089497550256
+        },
+        {
+            "horizon": "day_2",
+            "model": "random_forest",
+            "evaluation_set": "test",
+            "evaluation_rows": 73,
+            "mae": 56.30525492970529,
+            "rmse": 71.52206748273282,
+            "r2": -1.688921050935757
+        },
+        {
+            "horizon": "day_2",
+            "model": "extra_trees",
+            "evaluation_set": "validation",
+            "evaluation_rows": 56,
+            "mae": 38.095218364142,
+            "rmse": 51.994355558650234,
+            "r2": 0.0838440038206485
+        },
+        {
+            "horizon": "day_2",
+            "model": "extra_trees",
+            "evaluation_set": "test",
+            "evaluation_rows": 73,
+            "mae": 44.445006265987075,
+            "rmse": 60.34151600782066,
+            "r2": -0.9139490176323841
+        },
+        {
+            "horizon": "day_2",
+            "model": "hist_gradient_boosting",
+            "evaluation_set": "validation",
+            "evaluation_rows": 56,
+            "mae": 40.407232982405844,
+            "rmse": 56.38674881984005,
+            "r2": -0.0774847642718568
+        },
+        {
+            "horizon": "day_2",
+            "model": "hist_gradient_boosting",
+            "evaluation_set": "test",
+            "evaluation_rows": 73,
+            "mae": 58.71316798493745,
+            "rmse": 74.7238389390569,
+            "r2": -1.9350552597867656
+        },
+        {
+            "horizon": "day_3",
+            "model": "persistence",
+            "evaluation_set": "test",
+            "evaluation_rows": 72,
+            "mae": 38.187980825018755,
+            "rmse": 57.322345331394686,
+            "r2": -0.3731064763334282
+        },
+        {
+            "horizon": "day_3",
+            "model": "seasonal_7d",
+            "evaluation_set": "test",
+            "evaluation_rows": 67,
+            "mae": 54.745331082549114,
+            "rmse": 91.33267873395745,
+            "r2": -2.343203330466751
+        },
+        {
+            "horizon": "day_3",
+            "model": "ridge",
+            "evaluation_set": "validation",
+            "evaluation_rows": 55,
+            "mae": 59.96826806238871,
+            "rmse": 71.08424681802994,
+            "r2": -0.5761267078112011
+        },
+        {
+            "horizon": "day_3",
+            "model": "ridge",
+            "evaluation_set": "test",
+            "evaluation_rows": 72,
+            "mae": 49.30720840276839,
+            "rmse": 69.81183832489218,
+            "r2": -1.0366409030494457
+        },
+        {
+            "horizon": "day_3",
+            "model": "random_forest",
+            "evaluation_set": "validation",
+            "evaluation_rows": 55,
+            "mae": 40.99728915876328,
+            "rmse": 58.31921452288345,
+            "r2": -0.06088358106316072
+        },
+        {
+            "horizon": "day_3",
+            "model": "random_forest",
+            "evaluation_set": "test",
+            "evaluation_rows": 72,
+            "mae": 50.489215155159606,
+            "rmse": 68.10002765201479,
+            "r2": -0.9379871350026743
+        },
+        {
+            "horizon": "day_3",
+            "model": "extra_trees",
+            "evaluation_set": "validation",
+            "evaluation_rows": 55,
+            "mae": 39.7926732386045,
+            "rmse": 55.94578860907654,
+            "r2": 0.02370920168945445
+        },
+        {
+            "horizon": "day_3",
+            "model": "extra_trees",
+            "evaluation_set": "test",
+            "evaluation_rows": 72,
+            "mae": 42.08428048892237,
+            "rmse": 59.09336926014515,
+            "r2": -0.459263829908912
+        },
+        {
+            "horizon": "day_3",
+            "model": "hist_gradient_boosting",
+            "evaluation_set": "validation",
+            "evaluation_rows": 55,
+            "mae": 46.16014173773116,
+            "rmse": 62.70197460964058,
+            "r2": -0.22632852894533517
+        },
+        {
+            "horizon": "day_3",
+            "model": "hist_gradient_boosting",
+            "evaluation_set": "test",
+            "evaluation_rows": 72,
+            "mae": 42.82763745722352,
+            "rmse": 59.424501895061255,
+            "r2": -0.4756637654142535
+        }
+    ]
+}
