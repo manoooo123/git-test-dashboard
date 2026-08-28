@@ -332,22 +332,57 @@ span[data-baseweb="tag"] {
     color: #38BDF8 !important;
 }
 
-/* ---- AUTH panels: force button full width ---- */
+/* ---- AUTH panels: compact button styling like WhatsApp ---- */
 [data-testid="column"] .stButton > button {
-    width: 100% !important;
-    padding: 12px 20px !important;
-    font-size: 1rem !important;
+    width: auto !important;
+    min-width: 200px !important;
+    max-width: 280px !important;
+    margin: 0 auto !important;
+    display: block !important;
+    padding: 10px 24px !important;
+    font-size: 0.9rem !important;
     border-radius: 12px !important;
+    height: 42px !important;
 }
 
 /* ---- Streamlit column padding reset for auth ---- */
 [data-testid="stHorizontalBlock"] > [data-testid="column"] {
-    padding: 0 8px !important;
+    padding: 0 12px !important;
 }
 
-/* ---- BUTTONS ---- */
+/* ---- AUTH form input width control ---- */
+.stTextInput {
+    max-width: 350px !important;
+    margin: 0 auto !important;
+}
+
+.stCheckbox {
+    max-width: 350px !important;
+    margin: 0 auto !important;
+}
+
+/* ---- BUTTONS - Enhanced WhatsApp-style ---- */
 .stButton > button {
     background: linear-gradient(135deg, #0EA5E9, #2563EB) !important;
+    border: none !important;
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+    border-radius: 12px !important;
+    padding: 10px 20px !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2) !important;
+}
+
+.stButton > button:hover {
+    background: linear-gradient(135deg, #0284C7, #1D4ED8) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(14, 165, 233, 0.3) !important;
+}
+
+.stButton > button:active {
+    transform: translateY(0px) !important;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2) !important;
+}
     color: #FFFFFF !important;
     font-weight: 700 !important;
     border-radius: 10px !important;
@@ -860,7 +895,7 @@ def build_alerts(city_df, city, live_aqi, forecasts, threshold=150):
 
 
 # ============================================================================
-# SESSION STATE
+# SESSION STATE & AUTHENTICATION FLOW
 # ============================================================================
 
 for k, v in [("user", None), ("auth_token", None), ("selected_city", "Lahore"),
@@ -868,19 +903,31 @@ for k, v in [("user", None), ("auth_token", None), ("selected_city", "Lahore"),
     if k not in st.session_state:
         st.session_state[k] = v
 
+# Validate existing session token
 if not st.session_state["user"] and st.session_state["auth_token"]:
     restored = validate_session(st.session_state["auth_token"])
     st.session_state["user"] = restored
     if not restored:
         st.session_state["auth_token"] = None
 
+# Clear auth form states when user is authenticated
+if st.session_state["user"]:
+    auth_form_keys = [
+        "auth_login_email", "auth_login_password", "show_login_pwd", "remember_login",
+        "auth_register_fullname", "auth_register_email", "auth_register_password", 
+        "auth_register_confirm", "show_reg_pwd", "accept_terms"
+    ]
+    for key in auth_form_keys:
+        if key in st.session_state:
+            del st.session_state[key]
+
 # ============================================================================
 # AUTH PORTAL - FIXED LAYOUT
 # ============================================================================
 
 if not st.session_state["user"]:
-    # Create properly balanced two-panel layout
-    col_l, col_r = st.columns([1.2, 1], gap="medium")
+    # Create properly balanced two-panel layout with better spacing
+    col_l, col_r = st.columns([1.3, 0.9], gap="large")
 
     # ---- LEFT BRAND PANEL - Compact but informative ----
     with col_l:
@@ -967,7 +1014,8 @@ if not st.session_state["user"]:
     with col_r:
         st.markdown("""
 <div style="background:rgba(10,18,35,0.95); border:1px solid rgba(255,255,255,0.1);
-            border-radius:20px; padding:24px 28px; box-sizing:border-box; height:fit-content;">
+            border-radius:20px; padding:24px 32px; box-sizing:border-box; height:fit-content;
+            max-width:400px; margin:0 auto;">
 """, unsafe_allow_html=True)
         
         # Auth mode tabs - positioned naturally at top of form
@@ -994,7 +1042,7 @@ if not st.session_state["user"]:
 
             st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
 
-            if st.button("Sign In to Platform", key="btn_login", use_container_width=True):
+            if st.button("Sign In to Platform", key="btn_login", type="primary"):
                 email_clean = login_email.strip().lower()
                 if not email_clean or not login_pwd:
                     st.error("Please enter both email and password.")
@@ -1059,7 +1107,7 @@ if not st.session_state["user"]:
             
             st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
 
-            if st.button("Create Account & Access Platform", key="btn_register", use_container_width=True):
+            if st.button("Create Account & Access Platform", key="btn_register", type="primary"):
                 email_clean = reg_email.strip().lower()
                 if not full_name.strip() or not email_clean or not reg_password:
                     st.error("All fields are required.")
