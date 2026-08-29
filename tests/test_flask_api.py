@@ -434,9 +434,9 @@ class TestModelPerformance:
 class TestStreamlitSourceIntegrity:
 
     def test_password_toggle_uses_supported_type(self):
-        """Streamlit only accepts 'password' or 'default' for text_input type."""
-        src = Path("streamlit_app.py").read_text(encoding="utf-8")
-        assert 'type=pwd_type' in src or '"password"' in src
+        """Streamlit only accepts 'password' or 'default' for text_input type (updated for premium auth UI)."""
+        auth_ui = Path("streamlit_app.py").read_text(encoding="utf-8")
+        assert 'type=pwd_disp' in auth_ui or 'type=pwd_reg_disp' in auth_ui or 'type="password"' in auth_ui
 
     def test_no_hardcoded_no2_value(self):
         """NO2 must not be hardcoded as 24.2 — it's not available from this sensor network."""
