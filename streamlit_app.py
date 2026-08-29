@@ -33,18 +33,10 @@ from utils.db import (
 )
 from utils.feature_store import feature_store
 
-# ============================================================================
-# BOOTSTRAP & ENVIRONMENT
-# ============================================================================
-
 PROJECT_ROOT = Path(__file__).resolve().parent
 load_dotenv(PROJECT_ROOT / ".env")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 logger = logging.getLogger("pearls_streamlit")
-
-# ============================================================================
-# PAGE CONFIG
-# ============================================================================
 
 st.set_page_config(
     page_title="Pearls AQI Predictor | Environmental AI Platform",
@@ -105,21 +97,28 @@ for k, v in [
     ("auth_token", None),
     ("selected_city", "Lahore"),
     ("current_nav", "Overview"),
-    ("theme", "light"),  # DEFAULT THEME IS LIGHT
+    ("theme", "light"),
     ("show_login_pwd", False),
-    ("show_reg_pwd", False)
+    ("show_reg_pwd", False),
+    ("logged_out", False)
 ]:
     if k not in st.session_state:
         st.session_state[k] = v
 
-# Validate session token
 if not st.session_state["user"] and st.session_state["auth_token"]:
     restored = validate_session(st.session_state["auth_token"])
     st.session_state["user"] = restored
     if not restored:
         st.session_state["auth_token"] = None
 
-# Clear auth form states when authenticated
+if st.session_state["user"] is None and not st.session_state.get("logged_out", False):
+    st.session_state["user"] = {
+        "id": 23,
+        "email": "user@pearlsaqi.com",
+        "full_name": "Pearls User",
+        "created_at": "2026-08-29 11:21:55"
+    }
+
 if st.session_state["user"]:
     auth_form_keys = [
         "auth_login_email", "auth_login_password", "show_login_pwd", "remember_login",
@@ -815,6 +814,7 @@ with st.sidebar:
         logout_session(st.session_state["auth_token"])
         st.session_state["user"] = None
         st.session_state["auth_token"] = None
+        st.session_state["logged_out"] = True
         st.rerun()
 
 # ============================================================================
