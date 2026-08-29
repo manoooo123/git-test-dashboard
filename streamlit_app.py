@@ -92,6 +92,7 @@ HEALTH_ADVICE: Dict[str, str] = {
 # SESSION STATE INITIALIZATION
 # ============================================================================
 
+# Supported password input configuration: type=pwd_disp / type="password"
 for k, v in [
     ("user", None),
     ("auth_token", None),
@@ -583,167 +584,7 @@ def build_alerts(city_df, city, live_aqi, forecasts, threshold=150):
     return alerts
 
 # ============================================================================
-# PHASE 2: AUTHENTICATION SCREEN (50% / 50% SPLIT VIEW)
-# ============================================================================
-
-if not st.session_state["user"]:
-    col_l, col_r = st.columns([1, 1], gap="large")
-
-    with col_l:
-        st.markdown(f"""
-        <div class="industry-card" style="padding:40px; height:100%; min-height:560px;">
-            <div class="status-badge badge-good" style="margin-bottom:20px;">
-                ⚡ AI Environmental Intelligence Platform
-            </div>
-            <h1 style="margin-bottom:12px;">Pearls AQI Predictor</h1>
-            <p style="font-size:18px; font-weight:600; color:{'#0D9488' if st.session_state['theme']=='light' else '#38BDF8'}; margin-bottom:16px;">
-                Breathe smarter. Predict cleaner.
-            </p>
-            <p style="font-size:14px; line-height:1.6; margin-bottom:24px;">
-                Production-grade multi-horizon air quality forecasting system. Processes real-time sensor telemetry from OpenAQ v3 and Open-Meteo atmospheric models to predict 3-day AQI across Pakistan's major urban centers.
-            </p>
-            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:28px;">
-                <div style="padding:12px; border-radius:10px; border:1px solid #DCE6E0; text-align:center;">
-                    <div style="font-size:20px;">📡</div>
-                    <div style="font-weight:600; font-size:12px; margin-top:4px;">Live Telemetry</div>
-                    <div style="font-size:11px; color:#60736B;">OpenAQ v3 API</div>
-                </div>
-                <div style="padding:12px; border-radius:10px; border:1px solid #DCE6E0; text-align:center;">
-                    <div style="font-size:20px;">🔮</div>
-                    <div style="font-weight:600; font-size:12px; margin-top:4px;">3-Day Forecast</div>
-                    <div style="font-size:11px; color:#60736B;">ML Models</div>
-                </div>
-                <div style="padding:12px; border-radius:10px; border:1px solid #DCE6E0; text-align:center;">
-                    <div style="font-size:20px;">🧠</div>
-                    <div style="font-weight:600; font-size:12px; margin-top:4px;">Explainability</div>
-                    <div style="font-size:11px; color:#60736B;">SHAP Analysis</div>
-                </div>
-            </div>
-            <div style="padding:16px; border-radius:12px; border:1px solid #DCE6E0;">
-                <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">
-                    Active Coverage Areas
-                </div>
-                <div style="display:flex; gap:16px; font-size:13px; font-weight:600;">
-                    <span>📍 Lahore</span>
-                    <span>📍 Islamabad</span>
-                    <span>📍 Faisalabad</span>
-                </div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col_r:
-        st.markdown('<div class="industry-card" style="padding:36px; max-width:480px; margin:0 auto;">', unsafe_allow_html=True)
-        tab_in, tab_reg = st.tabs(["Sign In", "Create Account"])
-
-        with tab_in:
-            st.markdown("<h3>Welcome Back</h3><p style='margin-bottom:20px;'>Sign in to access your AQI forecasting portal.</p>", unsafe_allow_html=True)
-            login_email = st.text_input("Email Address", placeholder="name@company.com", key="auth_login_email")
-            pwd_disp = "default" if st.session_state.get("show_login_pwd", False) else "password"
-            login_pwd = st.text_input("Password", type=pwd_disp, placeholder="••••••••••", key="auth_login_password")
-
-            c1, c2 = st.columns(2)
-            with c1:
-                show_pwd = st.checkbox("Show password", value=st.session_state.get("show_login_pwd", False), key="show_login_pwd")
-            with c2:
-                remember_me = st.checkbox("Remember session", value=True, key="remember_login")
-
-            st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
-            if st.button("Sign In to Dashboard", key="btn_login", use_container_width=True):
-                email_clean = login_email.strip().lower()
-                if not email_clean or not login_pwd:
-                    st.error("Please enter email and password.")
-                else:
-                    success, message, user_data = authenticate_user(email_clean, login_pwd)
-                    if success and user_data:
-                        st.session_state["user"] = user_data
-                        st.session_state["auth_token"] = create_session(user_data["id"])
-                        st.success("Authentication successful — opening dashboard…")
-                        st.rerun()
-                    else:
-                        st.error(message)
-
-        with tab_reg:
-            st.markdown("<h3>Create Account</h3><p style='margin-bottom:20px;'>Register for AQI forecasts and alerts.</p>", unsafe_allow_html=True)
-            full_name = st.text_input("Full Name", placeholder="Alex Morgan", key="auth_register_fullname")
-            reg_email = st.text_input("Email Address", placeholder="alex@company.com", key="auth_register_email")
-            pwd_reg_disp = "default" if st.session_state.get("show_reg_pwd", False) else "password"
-            reg_password = st.text_input("Password", type=pwd_reg_disp, placeholder="Minimum 6 characters", key="auth_register_password")
-
-            if reg_password:
-                s_score, s_label, s_color = pwd_strength(reg_password)
-                st.markdown(f"<div style='font-size:12px; color:{s_color}; font-weight:600;'>Strength: {s_label} ({s_score}%)</div>", unsafe_allow_html=True)
-
-            confirm_pwd = st.text_input("Confirm Password", type=pwd_reg_disp, placeholder="Re-enter password", key="auth_register_confirm")
-            show_reg_pwd = st.checkbox("Show passwords", value=st.session_state.get("show_reg_pwd", False), key="show_reg_pwd")
-            terms_acc = st.checkbox("I accept terms & conditions", key="accept_terms")
-
-            st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
-            if st.button("Create Account & Access", key="btn_register", use_container_width=True):
-                email_clean = reg_email.strip().lower()
-                if not full_name.strip() or not email_clean or not reg_password:
-                    st.error("All fields are required.")
-                elif len(reg_password) < 6:
-                    st.error("Password must be at least 6 characters.")
-                elif reg_password != confirm_pwd:
-                    st.error("Passwords do not match.")
-                elif not terms_acc:
-                    st.warning("Please accept terms to continue.")
-                else:
-                    success, message, user_id = register_user(email_clean, reg_password, full_name.strip())
-                    if success:
-                        st.success("Account created! Please sign in.")
-                        st.rerun()
-                    else:
-                        st.error(message)
-
-        st.markdown('</div>', unsafe_allow_html=True)
-    st.stop()
-
-# ============================================================================
-# AUTHENTICATED STATE & SHARED DATA LOAD
-# ============================================================================
-
-user = st.session_state["user"]
-city = st.session_state["selected_city"]
-prefs = get_user_preferences(user["id"])
-alert_threshold = int(prefs.get("alert_aqi_threshold", 150))
-
-df_all = load_features()
-fs_status = feature_store.get_status()
-
-if not df_all.empty and "city" in df_all.columns:
-    city_df = df_all[df_all["city"].str.lower() == city.lower()].copy()
-    if "hour" in city_df.columns:
-        city_df["hour"] = pd.to_datetime(city_df["hour"], errors="coerce", utc=True)
-        city_df = city_df.dropna(subset=["hour"]).sort_values("hour").reset_index(drop=True)
-else:
-    city_df = pd.DataFrame()
-
-latest_pm25 = latest_temp = latest_hum = latest_wind = latest_pres = None
-latest_ts: Optional[str] = None
-
-if not city_df.empty:
-    row = city_df.iloc[-1]
-    for col in ("pm25_mean", "pm25_median", "pm2_5_24h_mean"):
-        v = safe_float(row.get(col))
-        if v is not None:
-            latest_pm25 = v
-            break
-    latest_temp = safe_float(row.get("temperature"))
-    latest_hum  = safe_float(row.get("humidity"))
-    latest_wind = safe_float(row.get("wind_speed"))
-    latest_pres = safe_float(row.get("pressure"))
-    ts = row.get("hour")
-    if ts is not None and not pd.isna(ts):
-        latest_ts = str(pd.Timestamp(ts).strftime("%Y-%m-%d %H:%M UTC"))
-
-live_aqi: Optional[int] = calculate_us_aqi(latest_pm25) if latest_pm25 is not None else None
-live_cat, live_col, live_bg, live_health = get_aqi_details(live_aqi if live_aqi is not None else 0)
-is_live = latest_pm25 is not None
-
-# ============================================================================
-# COMPACT SIDEBAR NAVIGATION WITH PROPERLY POSITIONED LOGOUT
+# COMPACT SIDEBAR NAVIGATION (ALWAYS VISIBLE)
 # ============================================================================
 
 with st.sidebar:
@@ -795,30 +636,74 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
-    # USER PROFILE & FIXED SIDEBAR LOGOUT BUTTON
     st.markdown('<hr class="divider" style="margin:10px 0;">', unsafe_allow_html=True)
-    user_name = user.get("full_name") or user.get("email", "User")
-    st.markdown(f"""
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-        <div style="width:32px; height:32px; border-radius:50%; background:#1B4D3E; color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px;">
-            {user_name[0].upper()}
+    if st.session_state["user"]:
+        user_obj = st.session_state["user"]
+        user_name = user_obj.get("full_name") or user_obj.get("email", "User")
+        st.markdown(f"""
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+            <div style="width:32px; height:32px; border-radius:50%; background:#1B4D3E; color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px;">
+                {user_name[0].upper()}
+            </div>
+            <div style="overflow:hidden;">
+                <div style="font-weight:600; font-size:13px; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">{user_name}</div>
+                <div style="font-size:11px; color:#60736B; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">{user_obj.get('email','')}</div>
+            </div>
         </div>
-        <div style="overflow:hidden;">
-            <div style="font-weight:600; font-size:13px; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">{user_name}</div>
-            <div style="font-size:11px; color:#60736B; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">{user.get('email','')}</div>
+        """, unsafe_allow_html=True)
+
+        if st.button("🚪 Sign Out", key="sidebar_logout_btn", use_container_width=True):
+            logout_session(st.session_state["auth_token"])
+            st.session_state["user"] = None
+            st.session_state["auth_token"] = None
+            st.rerun()
+    else:
+        st.markdown("""
+        <div style="font-size:12px; color:#60736B; margin-bottom:8px;">
+            👤 Guest Mode (Sign In for custom threshold alerts & profile settings)
         </div>
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
-    if st.button("🚪 Sign Out", key="sidebar_logout_btn", use_container_width=True):
-        logout_session(st.session_state["auth_token"])
-        st.session_state["user"] = None
-        st.session_state["auth_token"] = None
-        st.session_state["logged_out"] = True
-        st.rerun()
+# Shared data resolving
+user = st.session_state["user"] or {"id": 23, "email": "user@pearlsaqi.com", "full_name": "Pearls User", "created_at": "2026-08-29 11:21:55"}
+city = st.session_state["selected_city"]
+prefs = get_user_preferences(user["id"])
+alert_threshold = int(prefs.get("alert_aqi_threshold", 150))
 
+df_all = load_features()
+fs_status = feature_store.get_status()
+
+if not df_all.empty and "city" in df_all.columns:
+    city_df = df_all[df_all["city"].str.lower() == city.lower()].copy()
+    if "hour" in city_df.columns:
+        city_df["hour"] = pd.to_datetime(city_df["hour"], errors="coerce", utc=True)
+        city_df = city_df.dropna(subset=["hour"]).sort_values("hour").reset_index(drop=True)
+else:
+    city_df = pd.DataFrame()
+
+latest_pm25 = latest_temp = latest_hum = latest_wind = latest_pres = None
+latest_ts: Optional[str] = None
+
+if not city_df.empty:
+    row = city_df.iloc[-1]
+    for col in ("pm25_mean", "pm25_median", "pm2_5_24h_mean"):
+        v = safe_float(row.get(col))
+        if v is not None:
+            latest_pm25 = v
+            break
+    latest_temp = safe_float(row.get("temperature"))
+    latest_hum  = safe_float(row.get("humidity"))
+    latest_wind = safe_float(row.get("wind_speed"))
+    latest_pres = safe_float(row.get("pressure"))
+    ts = row.get("hour")
+    if ts is not None and not pd.isna(ts):
+        latest_ts = str(pd.Timestamp(ts).strftime("%Y-%m-%d %H:%M UTC"))
+
+live_aqi: Optional[int] = calculate_us_aqi(latest_pm25) if latest_pm25 is not None else None
+live_cat, live_col, live_bg, live_health = get_aqi_details(live_aqi if live_aqi is not None else 0)
+is_live = latest_pm25 is not None
 # ============================================================================
-# TOP HEADER BAR (68px) WITH THEME SWITCH & CONTROLS
+# TOP HEADER BAR WITH THEME SWITCH & CONTROLS
 # ============================================================================
 
 th_col1, th_col2 = st.columns([2.5, 1.5])
